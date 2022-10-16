@@ -1,6 +1,9 @@
 import heexConfig from "root/heex.config";
 import fetch from "node-fetch";
-import { GetAllCommentCountReturnType } from "./types";
+import {
+  CreateCommentReturnType,
+  GetAllCommentCountReturnType,
+} from "../types";
 
 const BASE_URL = heexConfig.databaseConfig.restApiServerUrl || "";
 const LEAN_STORAGE_CLASS =
@@ -8,7 +11,14 @@ const LEAN_STORAGE_CLASS =
 
 const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 
-export const createComment = async (payload: Object) => {
+/**
+ *
+ * @param payload : a root comment has no rid, a reply has rid
+ * @returns
+ */
+export const createComment = async (
+  payload: Object
+): Promise<CreateCommentReturnType> => {
   try {
     const response = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
@@ -21,11 +31,11 @@ export const createComment = async (payload: Object) => {
     });
 
     const json = await response.json();
-    return json;
+    return json as CreateCommentReturnType;
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return {} as CreateCommentReturnType;
 };
 
 export const getCommentById = async (cid: number | string) => {
@@ -72,3 +82,5 @@ export const getAllCommentCount =
 
     return { result: [], count: 0 };
   };
+
+export type { CreateCommentReturnType, GetAllCommentCountReturnType };

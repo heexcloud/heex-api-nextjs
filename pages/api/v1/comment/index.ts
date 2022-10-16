@@ -2,7 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
 import * as query from "root/query";
+import { type CreateCommentReturnType } from "root/query/types";
 import { RESPONSE_CODE } from "root/utils";
+import { isEmpty } from "lodash";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,12 +18,12 @@ export default async function handler(
   });
 
   if (req.method === "POST") {
-    const result = await query.createComment({
+    const result: CreateCommentReturnType = await query.createComment({
       ...req.body,
       ACL: { "*": { read: true } },
     });
 
-    if (result === undefined) {
+    if (isEmpty(result)) {
       res.status(500).json({
         data: null,
         code: RESPONSE_CODE.DATABASE_ERROR,
