@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
 import * as query from "root/query";
-import { type CreateCommentReturnType } from "root/query/types";
+import { type CreateCommentReturnType } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 import { isEmpty } from "lodash";
 

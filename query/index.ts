@@ -2,6 +2,8 @@ import * as leancloud from "./leancloud";
 import heexConfig, { DatabaseProvider } from "root/heex.config";
 import { CreateCommentReturnType, GetAllCommentCountReturnType } from "./types";
 
+export type { CreateCommentReturnType, GetAllCommentCountReturnType };
+
 export const createComment = async (payload: Object) => {
   let result: CreateCommentReturnType;
   switch (heexConfig.databaseProvider) {

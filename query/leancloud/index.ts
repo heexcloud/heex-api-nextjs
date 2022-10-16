@@ -82,5 +82,3 @@ export const getAllCommentCount =
 
     return { result: [], count: 0 };
   };
-
-export type { CreateCommentReturnType, GetAllCommentCountReturnType };
