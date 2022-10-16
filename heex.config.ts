@@ -13,17 +13,20 @@ enum CorsMethod {
   OPTIONS = "OPTIONS",
 }
 
+type LeanCloudConfig = {
+  appId: string;
+  appKey: string;
+  restApiServerUrl: string;
+  leanStorageClass: string;
+};
+
+type FirebaseConfig = {};
+
 export type HeexConfig = {
   corsOrigin: string | string[];
   corsMethods: CorsMethod[];
   databaseProvider: DatabaseProvider;
-  databaseConfig: {
-    // for leancloud
-    appId?: string;
-    appKey?: string;
-    restApiServerUrl?: string;
-    leanStorageClass?: string;
-  };
+  databaseConfig: LeanCloudConfig | FirebaseConfig;
 };
 
 const heexConfig: HeexConfig = {
