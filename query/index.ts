@@ -4,6 +4,11 @@ import { CreateCommentReturnType, GetAllCommentCountReturnType } from "./types";
 
 export type { CreateCommentReturnType, GetAllCommentCountReturnType };
 
+/**
+ *
+ * @param payload : a new comment has no trid (thread root id), a reply to an existing comment has trid
+ * @returns
+ */
 export const createComment = async (payload: Object) => {
   let result: CreateCommentReturnType;
   switch (heexConfig.databaseProvider) {
