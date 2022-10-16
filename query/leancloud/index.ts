@@ -1,16 +1,16 @@
 import heexConfig from "root/heex.config";
 import fetch from "node-fetch";
+import { GetAllCommentCountReturnType } from "./types";
 
 const BASE_URL = heexConfig.databaseConfig.restApiServerUrl || "";
 const LEAN_STORAGE_CLASS =
   heexConfig.databaseConfig.leanStorageClass || "Comment";
 
-const CREATE_COMMENT_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
-const GET_COMMENT_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
+const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 
 export const createComment = async (payload: Object) => {
   try {
-    const response = await fetch(CREATE_COMMENT_URL, {
+    const response = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
       headers: {
         "X-LC-Id": heexConfig.databaseConfig.appId || "",
@@ -30,7 +30,7 @@ export const createComment = async (payload: Object) => {
 
 export const getCommentById = async (cid: number | string) => {
   try {
-    const response = await fetch(`${GET_COMMENT_URL}/${cid}`, {
+    const response = await fetch(`${COMMENT_CLASS_BASE_URL}/${cid}`, {
       headers: {
         "X-LC-Id": heexConfig.databaseConfig.appId || "",
         "X-LC-Key": heexConfig.databaseConfig.appKey || "",
@@ -50,3 +50,25 @@ export const getCommentById = async (cid: number | string) => {
 
   return undefined;
 };
+
+export const getAllCommentCount =
+  async (): Promise<GetAllCommentCountReturnType> => {
+    try {
+      const response = await fetch(
+        `${COMMENT_CLASS_BASE_URL}?count=1&limit=0`,
+        {
+          headers: {
+            "X-LC-Id": heexConfig.databaseConfig.appId || "",
+            "X-LC-Key": heexConfig.databaseConfig.appKey || "",
+          },
+        }
+      );
+
+      const json = await response.json();
+      return json as GetAllCommentCountReturnType;
+    } catch (e) {
+      console.error(e);
+    }
+
+    return { result: [], count: 0 };
+  };
