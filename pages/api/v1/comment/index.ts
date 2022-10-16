@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
-import { leancloud } from "root/query";
+import * as query from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 
 export default async function handler(
@@ -16,7 +16,7 @@ export default async function handler(
   });
 
   if (req.method === "POST") {
-    const result = await leancloud.createComment({
+    const result = await query.createComment({
       ...req.body,
       ACL: { "*": { read: true } },
     });

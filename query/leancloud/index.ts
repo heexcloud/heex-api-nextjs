@@ -28,9 +28,9 @@ export const createComment = async (payload: Object) => {
   return undefined;
 };
 
-export const getCommentById = async (id?: number | string) => {
+export const getCommentById = async (cid: number | string) => {
   try {
-    const response = await fetch(`${GET_COMMENT_URL}/${id}`, {
+    const response = await fetch(`${GET_COMMENT_URL}/${cid}`, {
       headers: {
         "X-LC-Id": heexConfig.databaseConfig.appId || "",
         "X-LC-Key": heexConfig.databaseConfig.appKey || "",
@@ -38,6 +38,11 @@ export const getCommentById = async (id?: number | string) => {
     });
 
     const json = await response.json();
+
+    if ((json as any).error) {
+      throw new Error((json as any).error);
+    }
+
     return json;
   } catch (err) {
     console.error(err);

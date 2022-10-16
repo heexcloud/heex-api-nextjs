@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
-import { leancloud } from "root/query";
+import * as query from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 
 export default async function handler(
@@ -27,13 +27,13 @@ export default async function handler(
       return;
     }
 
-    const result = await leancloud.getCommentById(cid);
+    const result = await query.getCommentById(cid);
 
     if (result === undefined) {
       res.status(500).json({
         data: null,
         code: RESPONSE_CODE.DATABASE_ERROR,
-        message: "Leancloud error",
+        message: "Leancloud config error or item not found",
       });
       return;
     }

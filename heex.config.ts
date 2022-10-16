@@ -1,4 +1,4 @@
-enum Database {
+export enum DatabaseProvider {
   leancloud = "leancloud",
   detaSh = "detaSh",
 }
@@ -16,7 +16,7 @@ enum CorsMethod {
 export type HeexConfig = {
   corsOrigin: string | string[];
   corsMethods: CorsMethod[];
-  databaseProvider: Database;
+  databaseProvider: DatabaseProvider;
   databaseConfig: {
     // for leancloud
     appId?: string;
@@ -35,7 +35,7 @@ const heexConfig: HeexConfig = {
     CorsMethod.DELETE,
     CorsMethod.OPTIONS,
   ],
-  databaseProvider: Database.leancloud,
+  databaseProvider: DatabaseProvider.leancloud,
   databaseConfig: {
     appId: process.env.LEANCLOUD_APP_ID,
     appKey: process.env.LEANCLOUD_APP_KEY,
