@@ -10,13 +10,13 @@ export type { CreateCommentReturnType, GetAllCommentCountReturnType };
  * @returns
  */
 export const createComment = async (payload: Object) => {
-  let result: CreateCommentReturnType;
+  let result: CreateCommentReturnType & GetAllCommentCountReturnType;
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
       result = await leancloud.createComment(payload);
       break;
     default:
-      result = {} as CreateCommentReturnType;
+      result = {} as CreateCommentReturnType & GetAllCommentCountReturnType;
   }
 
   return result;

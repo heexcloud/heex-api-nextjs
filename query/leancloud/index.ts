@@ -19,9 +19,9 @@ const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
  */
 export const createComment = async (
   payload: Object
-): Promise<CreateCommentReturnType> => {
+): Promise<CreateCommentReturnType & GetAllCommentCountReturnType> => {
   try {
-    const response = await fetch(COMMENT_CLASS_BASE_URL, {
+    const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
       headers: {
         "X-LC-Id": databaseConfig.appId,
@@ -31,12 +31,23 @@ export const createComment = async (
       body: JSON.stringify(payload),
     });
 
-    const json = await response.json();
-    return json as CreateCommentReturnType;
+    const countResponse = await fetch(
+      `${COMMENT_CLASS_BASE_URL}?count=1&limit=0`,
+      {
+        headers: {
+          "X-LC-Id": databaseConfig.appId,
+          "X-LC-Key": databaseConfig.appKey,
+        },
+      }
+    );
+
+    const json = (await createResponse.json()) as CreateCommentReturnType;
+    const count = (await countResponse.json()) as GetAllCommentCountReturnType;
+    return { ...json, ...count };
   } catch (err) {
     console.error(err);
   }
-  return {} as CreateCommentReturnType;
+  return {} as CreateCommentReturnType & GetAllCommentCountReturnType;
 };
 
 export const getCommentById = async (cid: number | string) => {
