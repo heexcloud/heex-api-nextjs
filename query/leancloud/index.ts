@@ -1,13 +1,14 @@
-import heexConfig from "root/heex.config";
+import heexConfig, { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
 import {
   CreateCommentReturnType,
   GetAllCommentCountReturnType,
 } from "../types";
 
-const BASE_URL = heexConfig.databaseConfig.restApiServerUrl || "";
-const LEAN_STORAGE_CLASS =
-  heexConfig.databaseConfig.leanStorageClass || "Comment";
+const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
+
+const BASE_URL = databaseConfig.restApiServerUrl;
+const LEAN_STORAGE_CLASS = databaseConfig.leanStorageClass;
 
 const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 
@@ -23,8 +24,8 @@ export const createComment = async (
     const response = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
       headers: {
-        "X-LC-Id": heexConfig.databaseConfig.appId || "",
-        "X-LC-Key": heexConfig.databaseConfig.appKey || "",
+        "X-LC-Id": databaseConfig.appId,
+        "X-LC-Key": databaseConfig.appKey,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
@@ -42,8 +43,8 @@ export const getCommentById = async (cid: number | string) => {
   try {
     const response = await fetch(`${COMMENT_CLASS_BASE_URL}/${cid}`, {
       headers: {
-        "X-LC-Id": heexConfig.databaseConfig.appId || "",
-        "X-LC-Key": heexConfig.databaseConfig.appKey || "",
+        "X-LC-Id": databaseConfig.appId,
+        "X-LC-Key": databaseConfig.appKey,
       },
     });
 
@@ -68,8 +69,8 @@ export const getAllCommentCount =
         `${COMMENT_CLASS_BASE_URL}?count=1&limit=0`,
         {
           headers: {
-            "X-LC-Id": heexConfig.databaseConfig.appId || "",
-            "X-LC-Key": heexConfig.databaseConfig.appKey || "",
+            "X-LC-Id": databaseConfig.appId,
+            "X-LC-Key": databaseConfig.appKey,
           },
         }
       );
