@@ -23,14 +23,14 @@ export type LeanCloudConfig = {
 export type FirebaseConfig = {};
 
 export type HeexConfig = {
-  corsOrigin: string | string[];
+  corsOrigin: string;
   corsMethods: CorsMethod[];
   databaseProvider: DatabaseProvider;
   databaseConfig: LeanCloudConfig | FirebaseConfig;
 };
 
 const heexConfig: HeexConfig = {
-  corsOrigin: ["*"],
+  corsOrigin: "*",
   corsMethods: [
     CorsMethod.GET,
     CorsMethod.POST,
