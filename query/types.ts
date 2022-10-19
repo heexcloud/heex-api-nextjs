@@ -8,7 +8,19 @@ export type CommentCountReturnType = {
   count: number;
 };
 
-export type GetCommentsReturnType = any;
+export type CommentType = {
+  username: string;
+  email: string;
+  pageId: string;
+  comment: string;
+  createdAt: string;
+  updatedAt?: string;
+  objectId: string;
+};
+
+export type GetCommentsReturnType = {
+  comments: Array<CommentType>;
+};
 
 export type GetCommentCountFnType = (args: {
   pageId: string;

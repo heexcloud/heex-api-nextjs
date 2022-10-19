@@ -4,6 +4,7 @@ import {
   CreateCommentReturnType,
   CommentCountReturnType,
   GetCommentsReturnType,
+  CommentType,
 } from "./types";
 
 export type {
@@ -18,13 +19,13 @@ export type {
  * @returns
  */
 export const createComment = async (payload: Object) => {
-  let result: CreateCommentReturnType & CommentCountReturnType;
+  let result = {} as CreateCommentReturnType & CommentCountReturnType;
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
       result = await leancloud.createComment(payload);
       break;
     default:
-      result = {} as CreateCommentReturnType & CommentCountReturnType;
+      console.log("Unsupported databaseProvider");
   }
 
   return result;
@@ -37,7 +38,7 @@ export const getCommentById = async (cid: number | string) => {
       result = await leancloud.getCommentById(cid);
       break;
     default:
-      result = undefined;
+      console.log("Unsupported databaseProvider");
   }
 
   return result;
@@ -53,7 +54,7 @@ export const getCommentCount = async (
       result = { count: json.count };
       break;
     default:
-      result = { count: 0 };
+      console.log("Unsupported databaseProvider");
   }
 
   return result;
@@ -62,13 +63,16 @@ export const getCommentCount = async (
 export const getComments = async (
   args: any
 ): Promise<GetCommentsReturnType> => {
-  let result: GetCommentsReturnType = [];
+  let result: GetCommentsReturnType = {
+    comments: [] as CommentType[],
+  };
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
-      result = await leancloud.getComments(args);
+      const json = await leancloud.getComments(args);
+      result.comments = (json as any).results;
       break;
     default:
-      result = [] as GetCommentsReturnType;
+      console.log("Unsupported databaseProvider");
   }
 
   return result;
