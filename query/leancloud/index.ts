@@ -71,7 +71,7 @@ export const getCommentById = async (cid: number | string) => {
 };
 
 export const getCommentCount = async (
-  url: string
+  pageId: string
 ): Promise<CommentCountReturnType> => {
   try {
     const queryParams = new URLSearchParams({
@@ -79,7 +79,7 @@ export const getCommentCount = async (
       limit: "0",
       where: JSON.stringify({
         $or: [{ tid: { $exists: false } }, { tid: "" }],
-        url,
+        pageId,
       }),
     });
 
