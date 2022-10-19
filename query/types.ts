@@ -3,7 +3,7 @@ export type CreateCommentReturnType = {
   createdAt: string;
 };
 
-export type GetAllCommentCountReturnType = {
+export type CommentsCountReturnType = {
   result: Array<any>;
   count: number;
 };

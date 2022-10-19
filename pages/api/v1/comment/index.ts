@@ -4,7 +4,7 @@ import heexConfig from "root/heex.config";
 import * as query from "root/query";
 import {
   type CreateCommentReturnType,
-  type GetAllCommentCountReturnType,
+  type CommentsCountReturnType,
 } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 import { isEmpty } from "lodash";
@@ -21,7 +21,7 @@ export default async function handler(
   });
 
   if (req.method === "POST") {
-    const result: CreateCommentReturnType & GetAllCommentCountReturnType =
+    const result: CreateCommentReturnType & CommentsCountReturnType =
       await query.createComment({
         ...req.body,
         ACL: { "*": { read: true } },

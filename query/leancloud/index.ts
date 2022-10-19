@@ -1,9 +1,6 @@
 import heexConfig, { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
-import {
-  CreateCommentReturnType,
-  GetAllCommentCountReturnType,
-} from "../types";
+import { CreateCommentReturnType, CommentsCountReturnType } from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
 
@@ -19,7 +16,7 @@ const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
  */
 export const createComment = async (
   payload: Object
-): Promise<CreateCommentReturnType & GetAllCommentCountReturnType> => {
+): Promise<CreateCommentReturnType & CommentsCountReturnType> => {
   try {
     const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
@@ -42,12 +39,12 @@ export const createComment = async (
     );
 
     const json = (await createResponse.json()) as CreateCommentReturnType;
-    const count = (await countResponse.json()) as GetAllCommentCountReturnType;
+    const count = (await countResponse.json()) as CommentsCountReturnType;
     return { ...json, ...count };
   } catch (err) {
     console.error(err);
   }
-  return {} as CreateCommentReturnType & GetAllCommentCountReturnType;
+  return {} as CreateCommentReturnType & CommentsCountReturnType;
 };
 
 export const getCommentById = async (cid: number | string) => {
@@ -73,24 +70,20 @@ export const getCommentById = async (cid: number | string) => {
   return undefined;
 };
 
-export const getAllCommentCount =
-  async (): Promise<GetAllCommentCountReturnType> => {
-    try {
-      const response = await fetch(
-        `${COMMENT_CLASS_BASE_URL}?count=1&limit=0`,
-        {
-          headers: {
-            "X-LC-Id": databaseConfig.appId,
-            "X-LC-Key": databaseConfig.appKey,
-          },
-        }
-      );
+export const getCommentsCount = async (): Promise<CommentsCountReturnType> => {
+  try {
+    const response = await fetch(`${COMMENT_CLASS_BASE_URL}?count=1&limit=0`, {
+      headers: {
+        "X-LC-Id": databaseConfig.appId,
+        "X-LC-Key": databaseConfig.appKey,
+      },
+    });
 
-      const json = await response.json();
-      return json as GetAllCommentCountReturnType;
-    } catch (e) {
-      console.error(e);
-    }
+    const json = await response.json();
+    return json as CommentsCountReturnType;
+  } catch (e) {
+    console.error(e);
+  }
 
-    return { result: [], count: 0 };
-  };
+  return { result: [], count: 0 };
+};
