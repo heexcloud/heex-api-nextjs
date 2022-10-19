@@ -2,9 +2,10 @@ import heexConfig, { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
 import {
   CreateCommentReturnType,
+  GetCommentCountFnType,
   CommentCountReturnType,
   GetCommentsFnType,
-  GetCommentCountFnType,
+  GetCommentsReturnType,
 } from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
@@ -86,7 +87,8 @@ export const getCommentCount: GetCommentCountFnType = async ({ pageId }) => {
       }),
     });
 
-    const response = await fetch(COMMENT_CLASS_BASE_URL + "?" + queryParams, {
+    const apiUrl = COMMENT_CLASS_BASE_URL + "?" + queryParams;
+    const response = await fetch(apiUrl, {
       headers: {
         "X-LC-Id": databaseConfig.appId,
         "X-LC-Key": databaseConfig.appKey,
@@ -110,15 +112,17 @@ export const getCommentCount: GetCommentCountFnType = async ({ pageId }) => {
 export const getComments: GetCommentsFnType = async ({ pageId }) => {
   try {
     const queryParams = new URLSearchParams({
-      count: "1",
-      limit: "100",
       where: JSON.stringify({
         $or: [{ tid: { $exists: false } }, { tid: "" }],
         pageId,
       }),
+      limit: "100",
+      order: "-createdAt",
     });
 
-    const response = await fetch(COMMENT_CLASS_BASE_URL + queryParams, {
+    const apiUrl = COMMENT_CLASS_BASE_URL + "?" + queryParams;
+
+    const response = await fetch(apiUrl, {
       headers: {
         "X-LC-Id": databaseConfig.appId,
         "X-LC-Key": databaseConfig.appKey,
@@ -126,7 +130,7 @@ export const getComments: GetCommentsFnType = async ({ pageId }) => {
     });
 
     const json = await response.json();
-    return json as CommentCountReturnType;
+    return json as GetCommentsReturnType;
   } catch (e) {
     console.error(e);
   }

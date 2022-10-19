@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
+import { getComments, GetCommentsReturnType } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 
 export default async function handler(
@@ -12,6 +13,19 @@ export default async function handler(
     origin: heexConfig.corsOrigin,
     optionsSuccessStatus: 200,
   });
+
+  if (req.method === "GET") {
+    const result: GetCommentsReturnType = await getComments({
+      pageId: req.query.pageId,
+    });
+
+    res.status(200).json({
+      data: result,
+      code: RESPONSE_CODE.GENERAL_SUCCESS,
+      message: "Welcom to Heex!",
+    });
+    return;
+  }
 
   res.status(200).json({
     data: null,

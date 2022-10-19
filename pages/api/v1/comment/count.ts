@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
-import * as query from "root/query";
+import { getCommentCount } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 
 export default async function handler(
@@ -16,7 +16,7 @@ export default async function handler(
   });
 
   if (req.method === "GET") {
-    const result = await query.getCommentCount({ pageId: req.query.pageId });
+    const result = await getCommentCount({ pageId: req.query.pageId });
 
     res.status(200).json({
       data: result,
