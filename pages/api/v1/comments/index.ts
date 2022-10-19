@@ -22,7 +22,7 @@ export default async function handler(
     res.status(200).json({
       data: result,
       code: RESPONSE_CODE.GENERAL_SUCCESS,
-      message: "Welcom to Heex!",
+      message: "Get all comments for " + req.query.pageId + " successfully",
     });
     return;
   }
