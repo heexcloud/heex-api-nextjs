@@ -35,11 +35,13 @@ export const getCommentById = async (cid: number | string) => {
   return result;
 };
 
-export const getCommentCount = async (): Promise<{ count: number }> => {
+export const getCommentCount = async (
+  args: any
+): Promise<{ count: number }> => {
   let result = { count: 0 };
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
-      const json = await leancloud.getCommentCount();
+      const json = await leancloud.getCommentCount(args);
       result = { count: json.count };
       break;
     default:
