@@ -135,5 +135,5 @@ export const getComments: GetCommentsFnType = async ({ pageId }) => {
     console.error(e);
   }
 
-  return { result: [], count: 0 };
+  return { comments: [] };
 };
