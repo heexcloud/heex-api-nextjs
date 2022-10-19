@@ -1,6 +1,11 @@
 import heexConfig, { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
-import { CreateCommentReturnType, CommentCountReturnType } from "../types";
+import {
+  CreateCommentReturnType,
+  CommentCountReturnType,
+  GetCommentsFnType,
+  GetCommentCountFnType,
+} from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
 
@@ -70,13 +75,43 @@ export const getCommentById = async (cid: number | string) => {
   return undefined;
 };
 
-export const getCommentCount = async (
-  pageId: string
-): Promise<CommentCountReturnType> => {
+export const getCommentCount: GetCommentCountFnType = async ({ pageId }) => {
   try {
     const queryParams = new URLSearchParams({
       count: "1",
       limit: "0",
+      where: JSON.stringify({
+        $or: [{ tid: { $exists: false } }, { tid: "" }],
+        pageId,
+      }),
+    });
+
+    const response = await fetch(COMMENT_CLASS_BASE_URL + "?" + queryParams, {
+      headers: {
+        "X-LC-Id": databaseConfig.appId,
+        "X-LC-Key": databaseConfig.appKey,
+      },
+    });
+
+    const json = await response.json();
+
+    if ((json as any).error) {
+      return { result: [], count: 0 };
+    }
+
+    return json as CommentCountReturnType;
+  } catch (e) {
+    console.error(e);
+  }
+
+  return { result: [], count: 0 };
+};
+
+export const getComments: GetCommentsFnType = async ({ pageId }) => {
+  try {
+    const queryParams = new URLSearchParams({
+      count: "1",
+      limit: "100",
       where: JSON.stringify({
         $or: [{ tid: { $exists: false } }, { tid: "" }],
         pageId,
