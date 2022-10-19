@@ -70,9 +70,20 @@ export const getCommentById = async (cid: number | string) => {
   return undefined;
 };
 
-export const getCommentCount = async (): Promise<CommentCountReturnType> => {
+export const getCommentCount = async (
+  url: string
+): Promise<CommentCountReturnType> => {
   try {
-    const response = await fetch(`${COMMENT_CLASS_BASE_URL}?count=1&limit=0`, {
+    const queryParams = new URLSearchParams({
+      count: "1",
+      limit: "0",
+      where: JSON.stringify({
+        $or: [{ tid: { $exists: false } }, { tid: "" }],
+        url,
+      }),
+    });
+
+    const response = await fetch(COMMENT_CLASS_BASE_URL + queryParams, {
       headers: {
         "X-LC-Id": databaseConfig.appId,
         "X-LC-Key": databaseConfig.appKey,
