@@ -16,7 +16,7 @@ export default async function handler(
   });
 
   if (req.method === "GET") {
-    const result = await query.getCommentsCount();
+    const result = await query.getCommentCount();
 
     res.status(200).json({
       data: result,

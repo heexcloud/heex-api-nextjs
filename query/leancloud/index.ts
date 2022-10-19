@@ -1,6 +1,6 @@
 import heexConfig, { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
-import { CreateCommentReturnType, CommentsCountReturnType } from "../types";
+import { CreateCommentReturnType, CommentCountReturnType } from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
 
@@ -16,7 +16,7 @@ const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
  */
 export const createComment = async (
   payload: Object
-): Promise<CreateCommentReturnType & CommentsCountReturnType> => {
+): Promise<CreateCommentReturnType & CommentCountReturnType> => {
   try {
     const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
@@ -39,12 +39,12 @@ export const createComment = async (
     );
 
     const json = (await createResponse.json()) as CreateCommentReturnType;
-    const count = (await countResponse.json()) as CommentsCountReturnType;
+    const count = (await countResponse.json()) as CommentCountReturnType;
     return { ...json, ...count };
   } catch (err) {
     console.error(err);
   }
-  return {} as CreateCommentReturnType & CommentsCountReturnType;
+  return {} as CreateCommentReturnType & CommentCountReturnType;
 };
 
 export const getCommentById = async (cid: number | string) => {
@@ -70,7 +70,7 @@ export const getCommentById = async (cid: number | string) => {
   return undefined;
 };
 
-export const getCommentsCount = async (): Promise<CommentsCountReturnType> => {
+export const getCommentCount = async (): Promise<CommentCountReturnType> => {
   try {
     const response = await fetch(`${COMMENT_CLASS_BASE_URL}?count=1&limit=0`, {
       headers: {
@@ -80,7 +80,7 @@ export const getCommentsCount = async (): Promise<CommentsCountReturnType> => {
     });
 
     const json = await response.json();
-    return json as CommentsCountReturnType;
+    return json as CommentCountReturnType;
   } catch (e) {
     console.error(e);
   }

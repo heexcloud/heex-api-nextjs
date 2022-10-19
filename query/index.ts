@@ -1,8 +1,8 @@
 import * as leancloud from "./leancloud";
 import heexConfig, { DatabaseProvider } from "root/heex.config";
-import { CreateCommentReturnType, CommentsCountReturnType } from "./types";
+import { CreateCommentReturnType, CommentCountReturnType } from "./types";
 
-export type { CreateCommentReturnType, CommentsCountReturnType };
+export type { CreateCommentReturnType, CommentCountReturnType };
 
 /**
  *
@@ -10,13 +10,13 @@ export type { CreateCommentReturnType, CommentsCountReturnType };
  * @returns
  */
 export const createComment = async (payload: Object) => {
-  let result: CreateCommentReturnType & CommentsCountReturnType;
+  let result: CreateCommentReturnType & CommentCountReturnType;
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
       result = await leancloud.createComment(payload);
       break;
     default:
-      result = {} as CreateCommentReturnType & CommentsCountReturnType;
+      result = {} as CreateCommentReturnType & CommentCountReturnType;
   }
 
   return result;
@@ -35,11 +35,11 @@ export const getCommentById = async (cid: number | string) => {
   return result;
 };
 
-export const getCommentsCount = async (): Promise<{ count: number }> => {
+export const getCommentCount = async (): Promise<{ count: number }> => {
   let result = { count: 0 };
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
-      const json = await leancloud.getCommentsCount();
+      const json = await leancloud.getCommentCount();
       result = { count: json.count };
       break;
     default:
