@@ -21,7 +21,7 @@ export default async function handler(
     res.status(200).json({
       data: result,
       code: RESPONSE_CODE.GENERAL_SUCCESS,
-      message: "comment count is " + result,
+      message: "comment count is " + result.count,
     });
     return;
   }
