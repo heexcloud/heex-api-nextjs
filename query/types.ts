@@ -8,6 +8,7 @@ export type CommentCountReturnType = {
   count: number;
 };
 
+// CommentType maps the data structure in database
 // comment can be divided into two categries:
 // 1. thread, which is a comment that can have replies, it's the root of the thread
 // 2. reply, which is under some thread, it's the leaf of the thread
