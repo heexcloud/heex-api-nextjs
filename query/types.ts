@@ -29,7 +29,7 @@ export type CreateCommentFnType = (
 ) => Promise<CreateCommentReturnType & CommentCountReturnType>;
 
 export type GetCommentsReturnType = {
-  comments: Array<CommentType>;
+  comments: Array<CommentType & { replies?: CommentType[] }>;
 };
 
 export type GetCommentCountFnType = (args: {

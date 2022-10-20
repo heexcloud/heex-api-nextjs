@@ -65,12 +65,11 @@ export const getComments = async (
   args: any
 ): Promise<GetCommentsReturnType> => {
   let result: GetCommentsReturnType = {
-    comments: [] as CommentType[],
+    comments: [],
   };
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
-      const json = await leancloud.getComments(args);
-      result.comments = (json as any).results;
+      result = await leancloud.getComments(args);
       break;
     default:
       console.log("Unsupported databaseProvider");
