@@ -1,6 +1,7 @@
 import heexConfig, { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
 import {
+  CreateCommentFnType,
   CreateCommentReturnType,
   GetCommentCountFnType,
   CommentCountReturnType,
@@ -17,12 +18,10 @@ const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 
 /**
  *
- * @param payload : a root comment has no rid, a reply has rid
+ * @param payload : a thread has no tid, a reply has tid, or a toId
  * @returns
  */
-export const createComment = async (
-  payload: Object
-): Promise<CreateCommentReturnType & CommentCountReturnType> => {
+export const createComment: CreateCommentFnType = async (payload) => {
   try {
     const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
       method: "POST",
@@ -34,15 +33,22 @@ export const createComment = async (
       body: JSON.stringify(payload),
     });
 
-    const countResponse = await fetch(
-      `${COMMENT_CLASS_BASE_URL}?count=1&limit=0`,
-      {
-        headers: {
-          "X-LC-Id": databaseConfig.appId,
-          "X-LC-Key": databaseConfig.appKey,
-        },
-      }
-    );
+    const queryParams = new URLSearchParams({
+      count: "1",
+      limit: "0",
+      where: JSON.stringify({
+        $or: [{ tid: { $exists: false } }, { tid: "" }],
+        pageId: payload.pageId,
+      }),
+    });
+    const apiUrl = COMMENT_CLASS_BASE_URL + "?" + queryParams;
+
+    const countResponse = await fetch(apiUrl, {
+      headers: {
+        "X-LC-Id": databaseConfig.appId,
+        "X-LC-Key": databaseConfig.appKey,
+      },
+    });
 
     const json = (await createResponse.json()) as CreateCommentReturnType;
     const count = (await countResponse.json()) as CommentCountReturnType;

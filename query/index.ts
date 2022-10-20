@@ -5,6 +5,7 @@ import {
   CommentCountReturnType,
   GetCommentsReturnType,
   CommentType,
+  CreateCommentFnType,
 } from "./types";
 
 export type {
@@ -18,7 +19,7 @@ export type {
  * @param payload : a new comment has no trid (thread root id), a reply to an existing comment has trid
  * @returns
  */
-export const createComment = async (payload: Object) => {
+export const createComment: CreateCommentFnType = async (payload) => {
   let result = {} as CreateCommentReturnType & CommentCountReturnType;
   switch (heexConfig.databaseProvider) {
     case DatabaseProvider.leancloud:
