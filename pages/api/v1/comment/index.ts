@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
-import * as query from "root/query";
+import { query } from "root/query";
 import {
   type CreateCommentReturnType,
   type CommentCountReturnType,
@@ -22,13 +22,13 @@ export default async function handler(
 
   if (req.method === "POST") {
     const result: CreateCommentReturnType & CommentCountReturnType =
-      await query.createComment({
+      await query.databaseProvider.createComment({
         ...req.body,
         ACL: { "*": { read: true } },
       });
 
     if (isEmpty(result)) {
-      res.status(500).json({
+      res.status(200).json({
         data: null,
         code: RESPONSE_CODE.DATABASE_ERROR,
         message: "Leancloud error",

@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
-import * as query from "root/query";
+import { query } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
+import { isEmpty } from "lodash";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,7 +20,7 @@ export default async function handler(
     const { cid } = req.query;
 
     if (cid === null || cid === undefined || Array.isArray(cid)) {
-      res.status(400).json({
+      res.status(200).json({
         data: null,
         code: RESPONSE_CODE.BAD_REQUEST_PARAM_MISSING,
         message: "cid param missing",
@@ -27,10 +28,10 @@ export default async function handler(
       return;
     }
 
-    const result = await query.getCommentById(cid);
+    const result = await query.databaseProvider.getCommentById(cid);
 
-    if (result === undefined) {
-      res.status(500).json({
+    if (isEmpty(result)) {
+      res.status(200).json({
         data: null,
         code: RESPONSE_CODE.DATABASE_ERROR,
         message: "Leancloud config error or item not found",

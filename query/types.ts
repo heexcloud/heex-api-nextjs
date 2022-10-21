@@ -24,6 +24,10 @@ export type CommentType = {
   at?: string; // the publisher/username of the reply, which the reply replies to
 };
 
+export type GetCommentByIdFnType = (
+  id: number | string
+) => Promise<CommentType>;
+
 export type CreateCommentFnType = (
   args: CommentType
 ) => Promise<CreateCommentReturnType & CommentCountReturnType>;
@@ -39,3 +43,10 @@ export type GetCommentCountFnType = (args: {
 export type GetCommentsFnType = (args: {
   pageId: string;
 }) => Promise<GetCommentsReturnType>;
+
+export interface IQueryable {
+  createComment: CreateCommentFnType;
+  getComments: GetCommentsFnType;
+  getCommentCount: GetCommentCountFnType;
+  getCommentById: GetCommentByIdFnType;
+}
