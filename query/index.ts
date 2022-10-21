@@ -4,7 +4,6 @@ import {
   CreateCommentReturnType,
   CommentCountReturnType,
   GetCommentsReturnType,
-  CommentType,
   CreateCommentFnType,
 } from "./types";
 

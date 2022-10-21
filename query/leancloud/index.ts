@@ -106,7 +106,7 @@ export const getCommentCount: GetCommentCountFnType = async ({ pageId }) => {
     const json = await response.json();
 
     if ((json as any).error) {
-      return { result: [], count: 0 };
+      return { count: 0 };
     }
 
     return json as CommentCountReturnType;
@@ -114,7 +114,7 @@ export const getCommentCount: GetCommentCountFnType = async ({ pageId }) => {
     console.error(e);
   }
 
-  return { result: [], count: 0 };
+  return { count: 0 };
 };
 
 export const getComments: GetCommentsFnType = async ({ pageId }) => {
