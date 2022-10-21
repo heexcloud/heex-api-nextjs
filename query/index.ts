@@ -14,13 +14,7 @@ export type {
 };
 
 class Query {
-  constructor() {
-    this.databaseProvider = this.getDatabaseProvider();
-  }
-
-  databaseProvider: IQueryable;
-
-  getDatabaseProvider: () => IQueryable = () => {
+  get databaseProvider(): IQueryable {
     switch (heexConfig.databaseProvider) {
       case DatabaseProvider.leancloud:
         return new LeanCloudProvider();
@@ -28,7 +22,7 @@ class Query {
         console.error("Unsupported databaseProvider");
     }
     return {} as IQueryable;
-  };
+  }
 }
 
 export const query = new Query();
