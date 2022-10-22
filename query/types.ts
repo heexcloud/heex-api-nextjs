@@ -24,9 +24,13 @@ export type CommentType = {
   at?: string; // the publisher/username of the reply, which the reply replies to
 };
 
+export type GetCommentByIdReturnType = CommentType & {
+  replies?: CommentType[];
+};
+
 export type GetCommentByIdFnType = (
   id: number | string
-) => Promise<CommentType>;
+) => Promise<GetCommentByIdReturnType>;
 
 export type CreateCommentFnType = (
   args: CommentType

@@ -10,6 +10,7 @@ import {
   GetCommentByIdFnType,
   CommentType,
   IQueryable,
+  GetCommentByIdReturnType,
 } from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
@@ -160,13 +161,40 @@ export class LeanCloudProvider implements IQueryable {
         },
       });
 
+      //1. get the comment
       const json = await response.json();
 
       if ((json as any).error) {
-        return {} as CommentType;
+        return {} as GetCommentByIdReturnType;
+      }
+      // if the comment has tid, then, it's a reply
+      // otherwise, it's a thread/comment
+
+      const comment = json as CommentType;
+
+      if (!comment.tid) {
+        const queryParams = new URLSearchParams({
+          cql: `select * from ${databaseConfig.leanStorageClass} where tid in ("${comment.objectId}") order by -createdAt`,
+        });
+
+        const apiUrl = CQL_BASE_URL + "?" + queryParams;
+
+        // 2. get all replies of the above comments (replies)
+        const response = await fetch(apiUrl, {
+          headers: {
+            "X-LC-Id": databaseConfig.appId,
+            "X-LC-Key": databaseConfig.appKey,
+          },
+        });
+
+        const json = await response.json();
+        return {
+          ...comment,
+          replies: (json as any).results,
+        } as GetCommentByIdReturnType;
       }
 
-      return json as CommentType;
+      return comment;
     } catch (err) {
       console.error(err);
     }
