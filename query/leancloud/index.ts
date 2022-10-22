@@ -39,31 +39,33 @@ export class LeanCloudProvider implements IQueryable {
 
       const apiUrl1 = COMMENT_CLASS_BASE_URL + "?" + queryParams1;
 
+      //1. get all comments (threads)
       const response1 = await fetch(apiUrl1, {
         headers,
       });
 
-      const json1 = (await response1.json()) as { results: CommentType[] };
+      const threads = (await response1.json()) as { results: CommentType[] };
 
-      const replyIds: string[] = json1.results.map(
+      const threadIds: string[] = threads.results.map(
         (c: CommentType) => `"${c.objectId}"`
       );
 
       const queryParams2 = new URLSearchParams({
-        cql: `select * from ${databaseConfig.leanStorageClass} where tid in (${replyIds}) order by -createdAt`,
+        cql: `select * from ${databaseConfig.leanStorageClass} where tid in (${threadIds}) order by -createdAt`,
       });
 
       const apiUrl2 = CQL_BASE_URL + "?" + queryParams2;
 
+      // 2. get all replies of the above comments (replies)
       const response2 = await fetch(apiUrl2, {
         headers,
       });
 
-      const json2 = await response2.json();
+      const replies = await response2.json();
 
-      const result = json1.results.map((c) => {
+      const result = threads.results.map((c) => {
         const _c = { ...c, replies: [] as CommentType[] };
-        _c.replies = (json2 as any).results.filter(
+        _c.replies = (replies as any).results.filter(
           (__c: CommentType) => __c.tid === c.objectId
         );
 
