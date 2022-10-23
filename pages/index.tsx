@@ -18,7 +18,7 @@ const Home: NextPage = () => {
         </h1>
 
         <div className={styles.grid}>
-          <a href="https://heex.jekyllcloud.com" className={styles.card}>
+          <a href="https://heex.dev" className={styles.card}>
             <h2>Documentation &rarr;</h2>
             <p>Find in-depth information about Heex features and API.</p>
           </a>
