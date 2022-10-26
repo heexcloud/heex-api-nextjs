@@ -48,9 +48,16 @@ export type GetCommentsFnType = (args: {
   pageId: string;
 }) => Promise<GetCommentsReturnType>;
 
+// only return the comment itself, we attach the replies to it in the client side
+export type ThumbupCommentFnType = (args: {
+  objectId: string;
+  likes: number | string;
+}) => Promise<CommentType>;
+
 export interface IQueryable {
   createComment: CreateCommentFnType;
   getComments: GetCommentsFnType;
   getCommentCount: GetCommentCountFnType;
   getCommentById: GetCommentByIdFnType;
+  thumbupComment: ThumbupCommentFnType;
 }

@@ -11,6 +11,7 @@ import {
   CommentType,
   IQueryable,
   GetCommentByIdReturnType,
+  ThumbupCommentFnType,
 } from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
@@ -197,6 +198,28 @@ export class LeanCloudProvider implements IQueryable {
       return comment;
     } catch (err) {
       console.error(err);
+    }
+
+    return {} as CommentType;
+  };
+
+  thumbupComment: ThumbupCommentFnType = async ({ objectId, likes }) => {
+    try {
+      const response = await fetch(`${COMMENT_CLASS_BASE_URL}/${objectId}`, {
+        method: "PUT",
+        headers: {
+          "X-LC-Id": databaseConfig.appId,
+          "X-LC-Key": databaseConfig.appKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ likes }),
+      });
+
+      //1. get the comment
+      const json = (await response.json()) as CommentType;
+      return json;
+    } catch (err) {
+      console.error("err :>> ", err);
     }
 
     return {} as CommentType;

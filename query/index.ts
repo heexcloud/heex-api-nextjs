@@ -1,16 +1,20 @@
 import { LeanCloudProvider } from "./leancloud";
 import heexConfig, { DatabaseProvider } from "root/heex.config";
 import {
+  CommentType,
   CreateCommentReturnType,
   CommentCountReturnType,
   GetCommentsReturnType,
+  ThumbupCommentFnType,
   IQueryable,
 } from "./types";
 
 export type {
+  CommentType,
   CreateCommentReturnType,
   CommentCountReturnType,
   GetCommentsReturnType,
+  ThumbupCommentFnType,
 };
 
 class Query {

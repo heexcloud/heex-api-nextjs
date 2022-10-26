@@ -20,11 +20,12 @@ export default async function handler(
     optionsSuccessStatus: 200,
   });
 
+  // create new create
   if (req.method === "POST") {
     const result: CreateCommentReturnType & CommentCountReturnType =
       await query.databaseProvider.createComment({
         ...req.body,
-        ACL: { "*": { read: true } },
+        ACL: { "*": { read: true, write: true } },
       });
 
     if (isEmpty(result)) {
