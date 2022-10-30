@@ -25,10 +25,26 @@ const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 export class LeanCloudProvider implements IQueryable {
   getComments: GetCommentsFnType = async ({ pageId }) => {
     try {
+      const pageIdQuery = [{ pageId }];
+
+      // if the last char is /, remove it; else, add it to the end
+      // make sure it queries both (with or without trailing slash)
+      if (pageId.slice(-1) === "/") {
+        pageIdQuery.push({
+          pageId: pageId.substring(0, pageId.lastIndexOf("/")),
+        });
+      } else {
+        pageIdQuery.push({
+          pageId: pageId + "/",
+        });
+      }
+
       const queryParams1 = new URLSearchParams({
         where: JSON.stringify({
-          $or: [{ tid: { $exists: false } }, { tid: "" }],
-          pageId,
+          $and: [
+            { $or: [{ tid: { $exists: false } }, { tid: "" }] },
+            { $or: pageIdQuery },
+          ],
         }),
         limit: "25",
         order: "-createdAt",
