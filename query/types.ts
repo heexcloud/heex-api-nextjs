@@ -12,6 +12,8 @@ export type CommentCountReturnType = Record<string, any> & {
 // 1. thread, which is a comment that can have replies, it's the root of the thread
 // 2. reply, which is under some thread, it's the leaf of the thread
 export type CommentType = {
+  clientId: string;
+  clientName: string;
   username: string;
   email: string;
   pageId: string;
@@ -42,6 +44,7 @@ export type GetCommentsReturnType = {
 
 export type GetCommentCountFnType = (args: {
   pageId: string;
+  clientId: string;
 }) => Promise<CommentCountReturnType>;
 
 export type GetCommentsFnType = (args: {

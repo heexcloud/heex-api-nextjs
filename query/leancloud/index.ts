@@ -100,14 +100,19 @@ export class LeanCloudProvider implements IQueryable {
     return { comments: [] };
   };
 
-  getCommentCount: GetCommentCountFnType = async ({ pageId }) => {
+  getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {
     try {
+      if (!clientId || !pageId) {
+        throw new Error("clientId and pageId are required");
+      }
+
       const queryParams = new URLSearchParams({
         count: "1",
         limit: "0",
         where: JSON.stringify({
           $or: [{ tid: { $exists: false } }, { tid: "" }],
           pageId,
+          clientId,
         }),
       });
 
@@ -126,8 +131,8 @@ export class LeanCloudProvider implements IQueryable {
       }
 
       return json as CommentCountReturnType;
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error("err :>> ", err);
     }
 
     return { count: 0 };

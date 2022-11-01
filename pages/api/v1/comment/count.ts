@@ -27,6 +27,7 @@ export default async function handler(
 
     const result = await query.databaseProvider.getCommentCount({
       pageId: req.query.pageId as string,
+      clientId: req.query.clientId as string,
     });
 
     res.status(200).json({
