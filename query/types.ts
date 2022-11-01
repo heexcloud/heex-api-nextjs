@@ -38,17 +38,18 @@ export type CreateCommentFnType = (
   args: CommentType
 ) => Promise<CreateCommentReturnType & CommentCountReturnType>;
 
-export type GetCommentsReturnType = {
-  comments: Array<CommentType & { replies?: CommentType[] }>;
-};
-
 export type GetCommentCountFnType = (args: {
   pageId: string;
   clientId: string;
 }) => Promise<CommentCountReturnType>;
 
+export type GetCommentsReturnType = {
+  comments: Array<CommentType & { replies?: CommentType[] }>;
+};
+
 export type GetCommentsFnType = (args: {
   pageId: string;
+  clientId: string;
 }) => Promise<GetCommentsReturnType>;
 
 // only return the comment itself, we attach the replies to it in the client side

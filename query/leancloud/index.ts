@@ -23,7 +23,7 @@ const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 
 export class LeanCloudProvider implements IQueryable {
-  getComments: GetCommentsFnType = async ({ pageId }) => {
+  getComments: GetCommentsFnType = async ({ pageId, clientId }) => {
     try {
       const pageIdQuery = [{ pageId }];
 
@@ -46,6 +46,7 @@ export class LeanCloudProvider implements IQueryable {
           $and: [
             { $or: [{ tid: { $exists: false } }, { tid: "" }] },
             { $or: pageIdQuery },
+            { $or: [{ clientId }] },
           ],
         }),
         limit: "25",

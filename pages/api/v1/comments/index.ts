@@ -26,7 +26,8 @@ export default async function handler(
 
     const result: GetCommentsReturnType =
       await query.databaseProvider.getComments({
-        pageId: req.query.pageId,
+        pageId: req.query.pageId as string,
+        clientId: req.query.clientId as string,
       });
 
     res.status(200).json({
