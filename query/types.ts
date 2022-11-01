@@ -54,7 +54,7 @@ export type GetCommentsFnType = (args: {
 
 // only return the comment itself, we attach the replies to it in the client side
 export type ThumbupCommentFnType = (args: {
-  objectId: string;
+  cid: string;
   likes: number | string;
 }) => Promise<CommentType>;
 

@@ -25,6 +25,9 @@ const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 export class LeanCloudProvider implements IQueryable {
   getComments: GetCommentsFnType = async ({ pageId, clientId }) => {
     try {
+      if (!clientId || !pageId) {
+        throw new Error("clientId and pageId are required");
+      }
       const pageIdQuery = [{ pageId }];
 
       // if the last char is /, remove it; else, add it to the end
@@ -227,9 +230,9 @@ export class LeanCloudProvider implements IQueryable {
     return {} as CommentType;
   };
 
-  thumbupComment: ThumbupCommentFnType = async ({ objectId, likes }) => {
+  thumbupComment: ThumbupCommentFnType = async ({ cid, likes }) => {
     try {
-      const response = await fetch(`${COMMENT_CLASS_BASE_URL}/${objectId}`, {
+      const response = await fetch(`${COMMENT_CLASS_BASE_URL}/${cid}`, {
         method: "PUT",
         headers: {
           "X-LC-Id": databaseConfig.appId,

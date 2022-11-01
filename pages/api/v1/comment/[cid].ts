@@ -50,7 +50,7 @@ export default async function handler(
   // thumbup an existing comment
   if (req.method === "POST" && req.body.operation === "thumbup") {
     const result = await query.databaseProvider.thumbupComment({
-      objectId: cid,
+      cid,
       likes: req.body.likes,
     });
 
