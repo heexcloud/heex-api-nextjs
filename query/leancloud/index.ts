@@ -107,16 +107,34 @@ export class LeanCloudProvider implements IQueryable {
   getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {
     try {
       if (!clientId || !pageId) {
-        throw new Error("clientId and pageId are required");
+        return { count: 0 };
+      }
+
+      const pageIdQuery = [{ pageId }];
+
+      // if the last char is /, remove it; else, add it to the end
+      // make sure it queries both (with or without trailing slash)
+      if (pageId !== "/") {
+        if (pageId.slice(-1) === "/") {
+          pageIdQuery.push({
+            pageId: pageId.substring(0, pageId.lastIndexOf("/")),
+          });
+        } else {
+          pageIdQuery.push({
+            pageId: pageId + "/",
+          });
+        }
       }
 
       const queryParams = new URLSearchParams({
         count: "1",
         limit: "0",
         where: JSON.stringify({
-          $or: [{ tid: { $exists: false } }, { tid: "" }],
-          pageId,
-          clientId,
+          $and: [
+            { $or: [{ tid: { $exists: false } }, { tid: "" }] },
+            { $or: pageIdQuery },
+            { $or: [{ clientId }] },
+          ],
         }),
       });
 
@@ -142,8 +160,18 @@ export class LeanCloudProvider implements IQueryable {
     return { count: 0 };
   };
 
+  // 3 types of comments: a whole new comment, a new reply to a thread, a new reply to a thread's reply
   createComment: CreateCommentFnType = async (payload) => {
     try {
+      if (
+        !payload ||
+        !payload.comment ||
+        !payload.clientId ||
+        !payload.pageId
+      ) {
+        return {} as CreateCommentReturnType & CommentCountReturnType;
+      }
+
       const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
         method: "POST",
         headers: {
@@ -154,26 +182,39 @@ export class LeanCloudProvider implements IQueryable {
         body: JSON.stringify(payload),
       });
 
-      const queryParams = new URLSearchParams({
-        count: "1",
-        limit: "0",
-        where: JSON.stringify({
-          $or: [{ tid: { $exists: false } }, { tid: "" }],
-          pageId: payload.pageId,
-        }),
-      });
-      const apiUrl = COMMENT_CLASS_BASE_URL + "?" + queryParams;
+      // if it's a whole new comment
+      if (!payload.tid && !payload.rid) {
+        const queryParams = new URLSearchParams({
+          count: "1",
+          limit: "0",
+          where: JSON.stringify({
+            $or: [{ tid: { $exists: false } }, { tid: "" }],
+            pageId: payload.pageId,
+          }),
+        });
+        const apiUrl = COMMENT_CLASS_BASE_URL + "?" + queryParams;
 
-      const countResponse = await fetch(apiUrl, {
-        headers: {
-          "X-LC-Id": databaseConfig.appId,
-          "X-LC-Key": databaseConfig.appKey,
-        },
-      });
+        const countResponse = await fetch(apiUrl, {
+          headers: {
+            "X-LC-Id": databaseConfig.appId,
+            "X-LC-Key": databaseConfig.appKey,
+          },
+        });
 
-      const json = (await createResponse.json()) as CreateCommentReturnType;
-      const count = (await countResponse.json()) as CommentCountReturnType;
-      return { ...json, ...count };
+        const json = (await createResponse.json()) as CreateCommentReturnType;
+        const count = (await countResponse.json()) as CommentCountReturnType;
+        return { ...json, ...count };
+      }
+
+      // if it's a reply to a thread
+      if (payload.tid && !payload.rid) {
+      }
+
+      // if it's a reply to a thread's reply
+      if (payload.tid && payload.rid) {
+      }
+
+      return {} as CreateCommentReturnType & CommentCountReturnType;
     } catch (err) {
       console.error(err);
     }
