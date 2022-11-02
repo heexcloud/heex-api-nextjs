@@ -3,8 +3,9 @@ export type CreateCommentReturnType = {
   createdAt: string;
 };
 
-export type CommentCountReturnType = Record<string, any> & {
+export type CommentCountReturnType = {
   count: number;
+  results?: Array<any>;
 };
 
 // CommentType maps the data structure in database

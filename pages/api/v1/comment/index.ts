@@ -32,7 +32,7 @@ export default async function handler(
       res.status(200).json({
         data: null,
         code: RESPONSE_CODE.DATABASE_ERROR,
-        message: "Leancloud error",
+        message: "Failed to create comment: database error or bad request",
       });
       return;
     }
