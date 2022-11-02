@@ -50,6 +50,7 @@ export type GetCommentsReturnType = {
 export type GetCommentsFnType = (args: {
   pageId: string;
   clientId: string;
+  limit?: string;
 }) => Promise<GetCommentsReturnType>;
 
 // only return the comment itself, we attach the replies to it in the client side

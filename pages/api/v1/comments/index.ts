@@ -28,6 +28,7 @@ export default async function handler(
       await query.databaseProvider.getComments({
         pageId: req.query.pageId as string,
         clientId: req.query.clientId as string,
+        limit: req.query.limit as string | undefined,
       });
 
     res.status(200).json({
