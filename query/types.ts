@@ -37,7 +37,7 @@ export type GetCommentByIdFnType = (
 
 export type CreateCommentFnType = (
   args: CommentType
-) => Promise<CreateCommentReturnType & CommentCountReturnType>;
+) => Promise<CreateCommentReturnType>;
 
 export type GetCommentCountFnType = (args: {
   pageId: string;

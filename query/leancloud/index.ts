@@ -182,39 +182,8 @@ export class LeanCloudProvider implements IQueryable {
         body: JSON.stringify(payload),
       });
 
-      // if it's a whole new comment
-      if (!payload.tid && !payload.rid) {
-        const queryParams = new URLSearchParams({
-          count: "1",
-          limit: "0",
-          where: JSON.stringify({
-            $or: [{ tid: { $exists: false } }, { tid: "" }],
-            pageId: payload.pageId,
-          }),
-        });
-        const apiUrl = COMMENT_CLASS_BASE_URL + "?" + queryParams;
-
-        const countResponse = await fetch(apiUrl, {
-          headers: {
-            "X-LC-Id": databaseConfig.appId,
-            "X-LC-Key": databaseConfig.appKey,
-          },
-        });
-
-        const json = (await createResponse.json()) as CreateCommentReturnType;
-        const count = (await countResponse.json()) as CommentCountReturnType;
-        return { ...json, ...count };
-      }
-
-      // if it's a reply to a thread
-      if (payload.tid && !payload.rid) {
-      }
-
-      // if it's a reply to a thread's reply
-      if (payload.tid && payload.rid) {
-      }
-
-      return {} as CreateCommentReturnType & CommentCountReturnType;
+      const json = await createResponse.json();
+      return json as CreateCommentReturnType;
     } catch (err) {
       console.error(err);
     }

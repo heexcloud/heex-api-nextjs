@@ -2,10 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 import heexConfig from "root/heex.config";
 import { query } from "root/query";
-import {
-  type CreateCommentReturnType,
-  type CommentCountReturnType,
-} from "root/query";
+import { type CreateCommentReturnType } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 import { isEmpty } from "lodash";
 
@@ -22,7 +19,7 @@ export default async function handler(
 
   // create new create
   if (req.method === "POST") {
-    const result: CreateCommentReturnType & CommentCountReturnType =
+    const result: CreateCommentReturnType =
       await query.databaseProvider.createComment({
         ...req.body,
         ACL: { "*": { read: true, write: true } },
