@@ -217,7 +217,7 @@ export class LeanCloudProvider implements IQueryable {
 
         const apiUrl = CQL_BASE_URL + "?" + queryParams;
 
-        // 2. get all replies of the above comments (replies)
+        // 2. get all replies of the above comment (replies)
         const response = await fetch(apiUrl, {
           headers: {
             "X-LC-Id": databaseConfig.appId,
