@@ -23,7 +23,8 @@ const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 
 export class LeanCloudProvider implements IQueryable {
-  getComments: GetCommentsFnType = async ({ pageId, clientId, limit }) => {
+  getComments: GetCommentsFnType = async (params) => {
+    const { pageId, clientId, limit, skip } = params;
     try {
       if (!clientId || !pageId) {
         return { comments: [] };
@@ -52,9 +53,16 @@ export class LeanCloudProvider implements IQueryable {
             { $or: [{ clientId }] },
           ],
         }),
-        limit: limit || "25",
         order: "-createdAt",
       });
+
+      if (limit) {
+        queryParams1.append("limit", limit);
+      }
+
+      if (skip) {
+        queryParams1.append("skip", skip);
+      }
 
       const headers = {
         "X-LC-Id": databaseConfig.appId,

@@ -29,6 +29,7 @@ export default async function handler(
         pageId: req.query.pageId as string,
         clientId: req.query.clientId as string,
         limit: req.query.limit as string | undefined,
+        skip: req.query.skip as string | undefined,
       });
 
     res.status(200).json({
