@@ -24,7 +24,7 @@ const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 
 export class LeanCloudProvider implements IQueryable {
   getComments: GetCommentsFnType = async (params) => {
-    const { pageId, clientId, limit, skip } = params;
+    const { pageId, clientId, limit, offset } = params;
     try {
       if (!clientId || !pageId) {
         return { comments: [] };
@@ -60,8 +60,9 @@ export class LeanCloudProvider implements IQueryable {
         queryParams1.append("limit", limit);
       }
 
-      if (skip) {
-        queryParams1.append("skip", skip);
+      if (offset) {
+        // leancloud use skip, not offset
+        queryParams1.append("skip", offset);
       }
 
       const headers = {
