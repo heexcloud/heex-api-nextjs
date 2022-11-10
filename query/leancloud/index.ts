@@ -54,11 +54,8 @@ export class LeanCloudProvider implements IQueryable {
           ],
         }),
         order: "-createdAt",
+        limit: limit || "25",
       });
-
-      if (limit) {
-        queryParams1.append("limit", limit);
-      }
 
       if (offset) {
         // leancloud use skip, not offset
