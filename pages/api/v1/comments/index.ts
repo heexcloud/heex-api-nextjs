@@ -14,22 +14,24 @@ export default async function handler(
     optionsSuccessStatus: 200,
   });
 
+  const { pageId, clientId, limit, offset } = req.query;
+
   if (req.method === "GET") {
-    if (!req.query.pageId || typeof req.query.pageId !== "string") {
+    if (!pageId || !clientId || !limit) {
       res.status(200).json({
         data: null,
         code: RESPONSE_CODE.BAD_REQUEST_PARAM_MISSING,
-        message: "pageId is required",
+        message: "pageId, clientId and limt are required",
       });
       return;
     }
 
     const result: GetCommentsReturnType =
       await query.databaseProvider.getComments({
-        pageId: req.query.pageId as string,
-        clientId: req.query.clientId as string,
-        limit: req.query.limit as string | undefined,
-        offset: req.query.offset as string | undefined,
+        pageId: pageId as string,
+        clientId: clientId as string,
+        limit: limit as string | undefined,
+        offset: offset as string | undefined,
       });
 
     res.status(200).json({
