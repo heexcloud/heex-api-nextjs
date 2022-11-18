@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
-import heexConfig from "root/heex.config";
-
-type Handler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>;
+import type { Handler } from "./_types";
 
 export const cors = (handler: Handler) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import { RESPONSE_CODE } from "root/utils";
-
-type Handler = (req: NextApiRequest, res: NextApiResponse) => Promise<void>;
+import type { Handler } from "./_types";
 
 export const anonymous = (handler: Handler) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
