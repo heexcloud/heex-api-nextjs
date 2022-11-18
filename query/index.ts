@@ -9,6 +9,8 @@ import {
   IQueryable,
 } from "./types";
 
+import * as middlewares from "./middlewares";
+
 export type {
   CommentType,
   CreateCommentReturnType,
@@ -30,3 +32,4 @@ class Query {
 }
 
 export const query = new Query();
+export { middlewares };

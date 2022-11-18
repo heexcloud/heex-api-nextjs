@@ -1,21 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import NextCors from "nextjs-cors";
-import heexConfig from "root/heex.config";
 import { query, type CommentType } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 import { isEmpty } from "lodash";
+import { middlewares } from "root/query";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  // cors, allow any website to access this endpoint
-  await NextCors(req, res, {
-    methods: heexConfig.corsMethods,
-    origin: heexConfig.corsOrigin,
-    optionsSuccessStatus: 200,
-  });
-
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { cid } = req.query;
 
   if (cid === null || cid === undefined || Array.isArray(cid)) {
@@ -72,3 +61,15 @@ export default async function handler(
     message: "Welcom to Heex!",
   });
 }
+
+const determineWhichHandler = () => {
+  const { cors, anonymous } = middlewares;
+
+  if (process.env.AUTH_MODE === "anonymous") {
+    return cors(anonymous(handler));
+  }
+
+  return handler;
+};
+
+export default determineWhichHandler();

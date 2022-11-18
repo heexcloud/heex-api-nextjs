@@ -1,19 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import NextCors from "nextjs-cors";
-import heexConfig from "root/heex.config";
+import { middlewares } from "root/query";
 import { query, GetCommentsReturnType } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await NextCors(req, res, {
-    methods: heexConfig.corsMethods,
-    origin: heexConfig.corsOrigin,
-    optionsSuccessStatus: 200,
-  });
-
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     const { pageId, clientId, limit, offset } = req.query;
 
@@ -48,3 +38,5 @@ export default async function handler(
     message: "Welcom to Heex!",
   });
 }
+
+export default middlewares.cors(handler);
