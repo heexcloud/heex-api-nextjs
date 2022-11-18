@@ -4,7 +4,11 @@ import jwt from "jsonwebtoken";
 import { RESPONSE_CODE } from "root/utils";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET" || process.env.AUTH_MODE !== "anonymous") {
+  if (
+    req.method !== "GET" ||
+    process.env.AUTH_MODE !== "anonymous" ||
+    !process.env.JWT_TOKEN_SECRET
+  ) {
     res.status(400).json({
       data: null,
       code: RESPONSE_CODE.HTTP_METHOD_NOT_SUPPORTED,
