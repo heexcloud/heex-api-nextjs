@@ -10,10 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     !process.env.JWT_TOKEN_SECRET
   ) {
     res.status(400).json({
-      data: {
-        mode: process.env.AUTH_MODE,
-        JWT_TOKEN_SECRET: process.env.JWT_TOKEN_SECRET,
-      },
+      data: null,
       code: RESPONSE_CODE.HTTP_METHOD_NOT_SUPPORTED,
       message: "http get only and anonymous mode only",
     });
