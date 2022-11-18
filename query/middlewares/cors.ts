@@ -8,8 +8,8 @@ export const cors = (handler: Handler) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
     // cors, allow any website to access this endpoint
     await NextCors(req, res, {
-      methods: heexConfig.corsMethods,
-      origin: heexConfig.corsOrigin,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
+      origin: "*",
       optionsSuccessStatus: 200,
     });
 

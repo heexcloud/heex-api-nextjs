@@ -3,16 +3,6 @@ export enum DatabaseProvider {
   detaSh = "detaSh",
 }
 
-enum CorsMethod {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  PATCH = "PATCH",
-  DELETE = "DELETE",
-  HEAD = "HEAD",
-  OPTIONS = "OPTIONS",
-}
-
 export type LeanCloudConfig = {
   appId: string;
   appKey: string;
@@ -23,21 +13,11 @@ export type LeanCloudConfig = {
 export type FirebaseConfig = {};
 
 export type HeexConfig = {
-  corsOrigin: string;
-  corsMethods: CorsMethod[];
   databaseProvider: DatabaseProvider;
   databaseConfig: LeanCloudConfig | FirebaseConfig;
 };
 
 const heexConfig: HeexConfig = {
-  corsOrigin: "*",
-  corsMethods: [
-    CorsMethod.GET,
-    CorsMethod.POST,
-    CorsMethod.PUT,
-    CorsMethod.DELETE,
-    CorsMethod.OPTIONS,
-  ],
   databaseProvider: DatabaseProvider.leancloud,
   databaseConfig: {
     appId: process.env.LEANCLOUD_APP_ID || "",
