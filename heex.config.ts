@@ -1,5 +1,6 @@
 export enum DatabaseProvider {
   leancloud = "leancloud",
+  firebase = "firebase",
   detaSh = "detaSh",
 }
 

@@ -1,4 +1,5 @@
-import { LeanCloudProvider } from "./leancloud";
+import { LeanCloudProvider } from "./LeanCloudProvider";
+import { FirebaseProvider } from "./FirebaseProvider";
 import heexConfig, { DatabaseProvider } from "root/heex.config";
 import {
   CommentType,
@@ -24,6 +25,8 @@ class Query {
     switch (heexConfig.databaseProvider) {
       case DatabaseProvider.leancloud:
         return new LeanCloudProvider();
+      case DatabaseProvider.firebase:
+        return new FirebaseProvider();
       default:
         console.error("Unsupported databaseProvider");
     }
