@@ -25,10 +25,10 @@ const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 export class LeanCloudProvider implements IQueryable {
   getComments: GetCommentsFnType = async (params) => {
     const { pageId, clientId, limit, offset } = params;
+    if (!clientId || !pageId) {
+      return { comments: [] };
+    }
     try {
-      if (!clientId || !pageId) {
-        return { comments: [] };
-      }
       const pageIdQuery = [{ pageId }];
 
       // if the last char is /, remove it; else, add it to the end
@@ -174,6 +174,13 @@ export class LeanCloudProvider implements IQueryable {
         return {} as CreateCommentReturnType;
       }
 
+      const _pageId =
+        pageId === "/"
+          ? pageId
+          : pageId[pageId.length - 1] === "/"
+          ? pageId.slice(0, pageId.length - 1)
+          : pageId;
+
       const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
         method: "POST",
         headers: {
@@ -181,7 +188,10 @@ export class LeanCloudProvider implements IQueryable {
           "X-LC-Key": databaseConfig.appKey,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          pageId: _pageId,
+        }),
       });
 
       const json = await createResponse.json();
