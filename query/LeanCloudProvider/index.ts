@@ -168,14 +168,10 @@ export class LeanCloudProvider implements IQueryable {
 
   // 3 types of comments: a whole new comment, a new reply to a thread, a new reply to a thread's reply
   createComment: CreateCommentFnType = async (payload) => {
+    const { comment, clientId, pageId } = payload || {};
     try {
-      if (
-        !payload ||
-        !payload.comment ||
-        !payload.clientId ||
-        !payload.pageId
-      ) {
-        return {} as CreateCommentReturnType & CommentCountReturnType;
+      if (!payload || !comment || !clientId || !pageId) {
+        return {} as CreateCommentReturnType;
       }
 
       const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
@@ -193,7 +189,7 @@ export class LeanCloudProvider implements IQueryable {
     } catch (err) {
       console.error(err);
     }
-    return {} as CreateCommentReturnType & CommentCountReturnType;
+    return {} as CreateCommentReturnType;
   };
 
   getCommentById: GetCommentByIdFnType = async (cid) => {
