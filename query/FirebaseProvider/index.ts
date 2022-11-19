@@ -53,13 +53,20 @@ export class FirebaseProvider implements IQueryable {
         .collection(this.firestoreCollectionName)
         .doc(objectId);
 
+      const _pageId =
+        pageId === "/"
+          ? pageId
+          : pageId[pageId.length - 1] === "/"
+          ? pageId.slice(0, pageId.length - 1)
+          : pageId;
+
       await docRef.set({
         email,
         username,
         comment,
         clientId,
         clientName,
-        pageId,
+        pageId: _pageId,
         createdAt,
         objectId,
       });
@@ -71,6 +78,7 @@ export class FirebaseProvider implements IQueryable {
 
     return {} as CreateCommentReturnType;
   };
+
   getComments: GetCommentsFnType = async (params) => {};
   getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {};
   getCommentById: GetCommentByIdFnType = async (cid) => {};
