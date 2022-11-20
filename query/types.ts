@@ -22,18 +22,15 @@ export type CommentType = {
   createdAt: string;
   updatedAt?: string;
   objectId: string;
-  tid?: string; // the thread id of the comment, which is a reply per se
+  tid?: string; // the thread id of the comment, which makes it a reply per se
   rid?: string; // the id of the reply, which the reply replies to
   at?: string; // the publisher/username of the reply, which the reply replies to
-};
-
-export type GetCommentByIdReturnType = CommentType & {
-  replies?: CommentType[];
+  replies?: Omit<CommentType, "replies">[];
 };
 
 export type GetCommentByIdFnType = (
   id: number | string
-) => Promise<GetCommentByIdReturnType>;
+) => Promise<CommentType>;
 
 export type CreateCommentFnType = (
   args: CommentType
@@ -45,7 +42,7 @@ export type GetCommentCountFnType = (args: {
 }) => Promise<CommentCountReturnType>;
 
 export type GetCommentsReturnType = {
-  comments: Array<CommentType & { replies?: CommentType[] }>;
+  comments: CommentType[];
 };
 
 export type GetCommentsFnType = (args: {

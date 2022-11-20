@@ -1,4 +1,4 @@
-import heexConfig, { type LeanCloudConfig } from "root/heex.config";
+import { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
 import {
   CreateCommentFnType,
@@ -10,46 +10,40 @@ import {
   GetCommentByIdFnType,
   CommentType,
   IQueryable,
-  GetCommentByIdReturnType,
   ThumbupCommentFnType,
 } from "../types";
 
-const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
+const databaseConfig = {
+  appId: process.env.LEANCLOUD_APP_ID,
+  appKey: process.env.LEANCLOUD_APP_KEY,
+  restApiServerUrl: process.env.LEANCLOUD_REST_API_SERVER_URL,
+  leanStorageClass: process.env.LEANCLOUD_LEAN_STORAGE_CLASS,
+} as LeanCloudConfig;
+
 const BASE_URL = databaseConfig.restApiServerUrl;
-const LEAN_STORAGE_CLASS = databaseConfig.leanStorageClass;
-
+const LEAN_STORAGE_CLASS = databaseConfig.leanStorageClass || "Comment";
 const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
-
 const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 
 export class LeanCloudProvider implements IQueryable {
   getComments: GetCommentsFnType = async (params) => {
     const { pageId, clientId, limit, offset } = params;
+    if (!clientId || !pageId) {
+      return { comments: [] };
+    }
     try {
-      if (!clientId || !pageId) {
-        return { comments: [] };
-      }
-      const pageIdQuery = [{ pageId }];
-
-      // if the last char is /, remove it; else, add it to the end
-      // make sure it queries both (with or without trailing slash)
-      if (pageId !== "/") {
-        if (pageId.slice(-1) === "/") {
-          pageIdQuery.push({
-            pageId: pageId.substring(0, pageId.lastIndexOf("/")),
-          });
-        } else {
-          pageIdQuery.push({
-            pageId: pageId + "/",
-          });
-        }
-      }
+      const _pageId =
+        pageId === "/"
+          ? pageId
+          : pageId.slice(-1) === "/"
+          ? pageId.slice(0, pageId.length - 1)
+          : pageId;
 
       const queryParams1 = new URLSearchParams({
         where: JSON.stringify({
           $and: [
             { $or: [{ tid: { $exists: false } }, { tid: "" }] },
-            { $or: pageIdQuery },
+            { $or: [{ pageId: _pageId }] },
             { $or: [{ clientId }] },
           ],
         }),
@@ -168,15 +162,18 @@ export class LeanCloudProvider implements IQueryable {
 
   // 3 types of comments: a whole new comment, a new reply to a thread, a new reply to a thread's reply
   createComment: CreateCommentFnType = async (payload) => {
+    const { comment, clientId, pageId } = payload || {};
     try {
-      if (
-        !payload ||
-        !payload.comment ||
-        !payload.clientId ||
-        !payload.pageId
-      ) {
-        return {} as CreateCommentReturnType & CommentCountReturnType;
+      if (!payload || !comment || !clientId || !pageId) {
+        return {} as CreateCommentReturnType;
       }
+
+      const _pageId =
+        pageId === "/"
+          ? pageId
+          : pageId[pageId.length - 1] === "/"
+          ? pageId.slice(0, pageId.length - 1)
+          : pageId;
 
       const createResponse = await fetch(COMMENT_CLASS_BASE_URL, {
         method: "POST",
@@ -185,7 +182,11 @@ export class LeanCloudProvider implements IQueryable {
           "X-LC-Key": databaseConfig.appKey,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          pageId: _pageId,
+          ACL: { "*": { read: true, write: true } }, // * leancloud needs this, otherwise, object cannot be updated
+        }),
       });
 
       const json = await createResponse.json();
@@ -193,7 +194,7 @@ export class LeanCloudProvider implements IQueryable {
     } catch (err) {
       console.error(err);
     }
-    return {} as CreateCommentReturnType & CommentCountReturnType;
+    return {} as CreateCommentReturnType;
   };
 
   getCommentById: GetCommentByIdFnType = async (cid) => {
@@ -209,7 +210,7 @@ export class LeanCloudProvider implements IQueryable {
       const json = await response.json();
 
       if ((json as any).error) {
-        return {} as GetCommentByIdReturnType;
+        return {} as CommentType;
       }
       // if the comment has tid, then, it's a reply
       // otherwise, it's a thread/comment
@@ -235,7 +236,7 @@ export class LeanCloudProvider implements IQueryable {
         return {
           ...comment,
           replies: (json as any).results,
-        } as GetCommentByIdReturnType;
+        } as CommentType;
       }
 
       return comment;
