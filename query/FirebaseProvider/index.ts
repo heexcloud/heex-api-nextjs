@@ -164,12 +164,20 @@ export class FirebaseProvider implements IQueryable {
   };
   getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {
     try {
+      const _pageId =
+        pageId === "/"
+          ? pageId
+          : pageId.slice(-1) === "/"
+          ? pageId.slice(0, pageId.length - 1)
+          : pageId;
+
       const ref = this.firestore
         .collection(this.firestoreCollectionName)
         .where("clientId", "==", clientId)
-        .where("pageId", "==", pageId)
+        .where("pageId", "==", _pageId)
         .count();
       const count = (await ref.get()).data() as unknown as number;
+
       return { count } as CommentCountReturnType;
     } catch (err) {
       console.log("err :>> ", err);
