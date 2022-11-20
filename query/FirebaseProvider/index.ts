@@ -132,24 +132,23 @@ export class FirebaseProvider implements IQueryable {
           ? pageId.slice(0, pageId.length - 1)
           : pageId;
 
-      const startAt =
-        offset && Number.isInteger(parseInt(offset, 10))
-          ? parseInt(offset, 10) + 1
-          : 1;
+      // const startAt =
+      //   offset && Number.isInteger(parseInt(offset, 10))
+      //     ? parseInt(offset, 10)
+      //     : 0;
 
       const _limit =
         limit && Number.isInteger(parseInt(limit, 10))
           ? parseInt(limit, 10)
           : 25;
 
-      const snapshot = await this.firestore
+      const query = this.firestore
         .collection(this.firestoreCollectionName)
         .where("clientId", "==", clientId)
         .where("pageId", "==", _pageId)
-        .orderBy("createdAt", "desc")
-        .startAt(startAt)
-        .endAt(startAt - 1 + _limit)
-        .get();
+        .orderBy("createdAt", "desc");
+
+      const snapshot = await query.limit(_limit).get();
 
       const comments: CommentType[] = snapshot.docs.map(
         (doc) => doc.data() as CommentType
