@@ -28,13 +28,9 @@ export type CommentType = {
   replies?: Omit<CommentType, "replies">[];
 };
 
-export type GetCommentByIdReturnType = CommentType & {
-  replies?: CommentType[];
-};
-
 export type GetCommentByIdFnType = (
   id: number | string
-) => Promise<GetCommentByIdReturnType>;
+) => Promise<CommentType>;
 
 export type CreateCommentFnType = (
   args: CommentType

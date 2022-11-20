@@ -10,13 +10,12 @@ import {
   GetCommentByIdFnType,
   CommentType,
   IQueryable,
-  GetCommentByIdReturnType,
   ThumbupCommentFnType,
 } from "../types";
 
 const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
-const BASE_URL = databaseConfig.restApiServerUrl;
-const LEAN_STORAGE_CLASS = databaseConfig.leanStorageClass;
+const BASE_URL = process.env.LEANCLOUD_REST_API_SERVER_URL;
+const LEAN_STORAGE_CLASS = process.env.LEANCLOUD_LEAN_STORAGE_CLASS;
 
 const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 
@@ -206,7 +205,7 @@ export class LeanCloudProvider implements IQueryable {
       const json = await response.json();
 
       if ((json as any).error) {
-        return {} as GetCommentByIdReturnType;
+        return {} as CommentType;
       }
       // if the comment has tid, then, it's a reply
       // otherwise, it's a thread/comment
@@ -232,7 +231,7 @@ export class LeanCloudProvider implements IQueryable {
         return {
           ...comment,
           replies: (json as any).results,
-        } as GetCommentByIdReturnType;
+        } as CommentType;
       }
 
       return comment;

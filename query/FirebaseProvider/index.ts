@@ -12,7 +12,6 @@ import {
   GetCommentByIdFnType,
   CommentType,
   IQueryable,
-  GetCommentByIdReturnType,
   ThumbupCommentFnType,
 } from "../types";
 

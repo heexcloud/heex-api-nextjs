@@ -19,7 +19,9 @@ export type HeexConfig = {
 };
 
 const heexConfig: HeexConfig = {
-  databaseProvider: DatabaseProvider.leancloud,
+  databaseProvider:
+    (process.env.DATABASE_PROVIDER as DatabaseProvider) ||
+    DatabaseProvider.leancloud,
   databaseConfig: {
     appId: process.env.LEANCLOUD_APP_ID || "",
     appKey: process.env.LEANCLOUD_APP_KEY || "",
