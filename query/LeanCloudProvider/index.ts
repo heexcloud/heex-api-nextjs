@@ -1,4 +1,4 @@
-import heexConfig, { type LeanCloudConfig } from "root/heex.config";
+import { type LeanCloudConfig } from "root/heex.config";
 import fetch from "node-fetch";
 import {
   CreateCommentFnType,
@@ -13,12 +13,16 @@ import {
   ThumbupCommentFnType,
 } from "../types";
 
-const databaseConfig = heexConfig.databaseConfig as LeanCloudConfig;
-const BASE_URL = process.env.LEANCLOUD_REST_API_SERVER_URL;
-const LEAN_STORAGE_CLASS = process.env.LEANCLOUD_LEAN_STORAGE_CLASS;
+const databaseConfig = {
+  appId: process.env.LEANCLOUD_APP_ID,
+  appKey: process.env.LEANCLOUD_APP_KEY,
+  restApiServerUrl: process.env.LEANCLOUD_REST_API_SERVER_URL,
+  leanStorageClass: process.env.LEANCLOUD_LEAN_STORAGE_CLASS,
+} as LeanCloudConfig;
 
+const BASE_URL = databaseConfig.restApiServerUrl;
+const LEAN_STORAGE_CLASS = databaseConfig.leanStorageClass || "Comment";
 const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
-
 const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 
 export class LeanCloudProvider implements IQueryable {

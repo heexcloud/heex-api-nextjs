@@ -1,6 +1,6 @@
 import { LeanCloudProvider } from "./LeanCloudProvider";
 import { FirebaseProvider } from "./FirebaseProvider";
-import heexConfig, { DatabaseProvider } from "root/heex.config";
+import { DatabaseProvider } from "root/heex.config";
 import {
   CommentType,
   CreateCommentReturnType,
@@ -22,7 +22,7 @@ export type {
 
 class Query {
   get databaseProvider(): IQueryable {
-    switch (heexConfig.databaseProvider) {
+    switch (process.env.DATABASE_PROVIDER) {
       case DatabaseProvider.leancloud:
         return new LeanCloudProvider();
       case DatabaseProvider.firebase:
