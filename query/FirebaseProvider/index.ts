@@ -16,18 +16,22 @@ import {
 } from "../types";
 
 export class FirebaseProvider implements IQueryable {
-  firebaseApp: App;
-  serviceAccount: JSON;
+  firebaseApp: App | undefined;
   firestore: Firestore;
   firestoreCollectionName: string;
 
   constructor() {
-    this.serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT!);
-    this.firebaseApp = initializeApp(
-      // @ts-ignore
-      firebaseAdmin.credential.cert(this.serviceAccount)
-    );
-    this.firestore = getFirestore(this.firebaseApp);
+    if (firebaseAdmin.apps.length === 0) {
+      this.firebaseApp = initializeApp({
+        credential: firebaseAdmin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY,
+        }),
+      });
+    }
+
+    this.firestore = getFirestore(this.firebaseApp!);
     this.firestoreCollectionName = process.env.FIRESTORE_COLLECTION_NAME!;
   }
 
