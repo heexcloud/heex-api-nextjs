@@ -166,6 +166,31 @@ export class FirebaseProvider implements IQueryable {
 
     return { count: 0 } as CommentCountReturnType;
   };
-  getCommentById: GetCommentByIdFnType = async (cid) => {};
-  thumbupComment: ThumbupCommentFnType = async ({ cid, likes }) => {};
+  getCommentById: GetCommentByIdFnType = async (cid) => {
+    try {
+      const docRef = this.firestore
+        .collection(this.firestoreCollectionName)
+        .doc(typeof cid === "string" ? cid : cid.toString());
+      const doc = (await docRef.get()).data();
+      return doc as CommentType;
+    } catch (err) {
+      console.log("err :>> ", err);
+    }
+    return {} as CommentType;
+  };
+  thumbupComment: ThumbupCommentFnType = async ({ cid, likes }) => {
+    try {
+      const docRef = this.firestore
+        .collection(this.firestoreCollectionName)
+        .doc(cid);
+      const doc = (await docRef.get()).data();
+
+      // await docRef.update({ likes: doc.likes ? doc.likes + 1 : 1 })
+      await docRef.update({ likes });
+
+      return doc as CommentType;
+    } catch (err) {}
+
+    return {} as CommentType;
+  };
 }
