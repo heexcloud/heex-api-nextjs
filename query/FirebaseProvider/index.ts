@@ -151,7 +151,21 @@ export class FirebaseProvider implements IQueryable {
 
     return { comments: [] };
   };
-  getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {};
+  getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {
+    try {
+      const ref = this.firestore
+        .collection(this.firestoreCollectionName)
+        .where("clientId", "==", clientId)
+        .where("pageId", "==", pageId)
+        .count();
+      const count = (await ref.get()).data() as unknown as number;
+      return { count } as CommentCountReturnType;
+    } catch (err) {
+      console.log("err :>> ", err);
+    }
+
+    return { count: 0 } as CommentCountReturnType;
+  };
   getCommentById: GetCommentByIdFnType = async (cid) => {};
   thumbupComment: ThumbupCommentFnType = async ({ cid, likes }) => {};
 }
