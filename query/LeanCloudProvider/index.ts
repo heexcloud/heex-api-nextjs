@@ -29,27 +29,18 @@ export class LeanCloudProvider implements IQueryable {
       return { comments: [] };
     }
     try {
-      const pageIdQuery = [{ pageId }];
-
-      // if the last char is /, remove it; else, add it to the end
-      // make sure it queries both (with or without trailing slash)
-      if (pageId !== "/") {
-        if (pageId.slice(-1) === "/") {
-          pageIdQuery.push({
-            pageId: pageId.substring(0, pageId.lastIndexOf("/")),
-          });
-        } else {
-          pageIdQuery.push({
-            pageId: pageId + "/",
-          });
-        }
-      }
+      const _pageId =
+        pageId === "/"
+          ? pageId
+          : pageId.slice(-1) === "/"
+          ? pageId.slice(0, pageId.length - 1)
+          : pageId;
 
       const queryParams1 = new URLSearchParams({
         where: JSON.stringify({
           $and: [
             { $or: [{ tid: { $exists: false } }, { tid: "" }] },
-            { $or: pageIdQuery },
+            { $or: [{ pageId: _pageId }] },
             { $or: [{ clientId }] },
           ],
         }),
