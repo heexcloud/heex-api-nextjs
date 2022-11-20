@@ -1,6 +1,6 @@
 export type CreateCommentReturnType = {
   objectId: string;
-  createdAt: string;
+  createdAt: number;
 };
 
 export type CommentCountReturnType = {
@@ -19,7 +19,7 @@ export type CommentType = {
   email: string;
   pageId: string;
   comment: string;
-  createdAt: string;
+  createdAt: number;
   updatedAt?: string;
   objectId: string;
   tid?: string; // the thread id of the comment, which makes it a reply per se

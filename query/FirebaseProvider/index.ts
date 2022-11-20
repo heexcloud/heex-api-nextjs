@@ -81,6 +81,7 @@ export class FirebaseProvider implements IQueryable {
           ...payload,
           pageId: _pageId,
           objectId: replyObjectId,
+          createdAt: Date.now(),
         });
 
         await threadRef.update({ replies });
@@ -168,6 +169,7 @@ export class FirebaseProvider implements IQueryable {
 
     return { comments: [] };
   };
+
   getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {
     try {
       const _pageId =
@@ -191,6 +193,7 @@ export class FirebaseProvider implements IQueryable {
 
     return { count: 0 } as CommentCountReturnType;
   };
+
   getCommentById: GetCommentByIdFnType = async (cid) => {
     try {
       const docRef = this.firestore
