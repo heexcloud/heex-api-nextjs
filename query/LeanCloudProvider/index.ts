@@ -185,6 +185,7 @@ export class LeanCloudProvider implements IQueryable {
         body: JSON.stringify({
           ...payload,
           pageId: _pageId,
+          ACL: { "*": { read: true, write: true } },
         }),
       });
 

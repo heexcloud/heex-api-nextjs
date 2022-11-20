@@ -11,7 +11,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const result: CreateCommentReturnType =
       await query.databaseProvider.createComment({
         ...req.body,
-        ACL: { "*": { read: true, write: true } },
       });
 
     if (isEmpty(result)) {
