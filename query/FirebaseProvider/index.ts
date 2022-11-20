@@ -1,3 +1,4 @@
+import { type FirebaseConfig } from "root/heex.config";
 import firebaseAdmin from "firebase-admin";
 import { App, initializeApp } from "firebase-admin/app";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
@@ -15,6 +16,13 @@ import {
   ThumbupCommentFnType,
 } from "../types";
 
+const firebaseConfig = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  collectionName: process.env.FIRESTORE_COLLECTION_NAME,
+} as FirebaseConfig;
+
 export class FirebaseProvider implements IQueryable {
   firebaseApp: App | undefined;
   firestore: Firestore;
@@ -24,15 +32,15 @@ export class FirebaseProvider implements IQueryable {
     if (firebaseAdmin.apps.length === 0) {
       this.firebaseApp = initializeApp({
         credential: firebaseAdmin.credential.cert({
-          projectId: process.env.FIREBASE_PROJECT_ID,
-          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          privateKey: process.env.FIREBASE_PRIVATE_KEY,
+          projectId: firebaseConfig.projectId,
+          clientEmail: firebaseConfig.clientEmail,
+          privateKey: firebaseConfig.privateKey,
         }),
       });
     }
 
     this.firestore = getFirestore(this.firebaseApp!);
-    this.firestoreCollectionName = process.env.FIRESTORE_COLLECTION_NAME!;
+    this.firestoreCollectionName = firebaseConfig.collectionName;
   }
 
   createComment: CreateCommentFnType = async (payload) => {
