@@ -211,10 +211,9 @@ export class FirebaseProvider implements IQueryable {
       const docRef = this.firestore
         .collection(this.firestoreCollectionName)
         .doc(cid);
-      const doc = (await docRef.get()).data();
-
-      // await docRef.update({ likes: doc.likes ? doc.likes + 1 : 1 })
+     
       await docRef.update({ likes });
+      const doc = (await docRef.get()).data();
 
       return doc as CommentType;
     } catch (err) {}
