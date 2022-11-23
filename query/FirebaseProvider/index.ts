@@ -178,9 +178,9 @@ export class FirebaseProvider implements IQueryable {
         .where("pageId", "==", _pageId)
         .where("tid", "==", "")
         .count();
-      const count = (await ref.get()).data() as unknown as number;
+      const count = (await ref.get()).data() as CommentCountReturnType;
 
-      return { count } as CommentCountReturnType;
+      return count;
     } catch (err) {
       console.log("err :>> ", err);
     }
