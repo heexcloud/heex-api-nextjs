@@ -22,6 +22,7 @@ export type CommentType = {
   createdAt: number;
   updatedAt?: number;
   objectId: string;
+  likes?: number;
   tid?: string; // the thread id of the comment, which makes it a reply per se
   rid?: string; // the id of the reply, which the reply replies to
   at?: string; // the publisher/username of the reply, which the reply replies to

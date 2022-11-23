@@ -15,7 +15,6 @@ import {
   IQueryable,
   ThumbupCommentFnType,
 } from "../types";
-import PageLoader from "next/dist/client/page-loader";
 
 const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -74,6 +73,7 @@ export class FirebaseProvider implements IQueryable {
         comment,
         createdAt: _createdAt,
         objectId,
+        likes: payload.likes || 0,
         tid: payload.tid || "", // empty string means this is a thread, otherwise, it's a reply
         rid: payload.rid || "", // rid is reply id, so, the newly created comment is a reply's reply
         at: payload.at || "",
