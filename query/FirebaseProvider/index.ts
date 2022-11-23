@@ -141,18 +141,21 @@ export class FirebaseProvider implements IQueryable {
         .orderBy("createdAt", "desc");
 
       const replySnapshot = await queryReplies.get();
-      const replies = replySnapshot.docs.map(
-        (doc) => doc.data() as Omit<CommentType, "replies">
-      );
 
-      const replyIds = replies.map((r) => r.objectId);
+      if (replySnapshot.docs && replySnapshot.docs.length > 0) {
+        const replies = replySnapshot.docs.map(
+          (doc) => doc.data() as Omit<CommentType, "replies">
+        );
 
-      comments.forEach((comment) => {
-        const index = replyIds.findIndex((rid) => rid === comment.objectId);
-        if (index > -1) {
-          comment.replies?.push(replies[index]);
-        }
-      });
+        const tids = replies.map((r) => r.tid);
+
+        comments.forEach((comment) => {
+          const index = tids.findIndex((tid) => tid === comment.objectId);
+          if (index > -1) {
+            comment.replies?.push(replies[index]);
+          }
+        });
+      }
 
       return { comments } as GetCommentsReturnType;
     } catch (err) {
@@ -199,6 +202,7 @@ export class FirebaseProvider implements IQueryable {
     }
     return {} as CommentType;
   };
+
   thumbupComment: ThumbupCommentFnType = async ({ cid, likes }) => {
     try {
       const docRef = this.firestore
