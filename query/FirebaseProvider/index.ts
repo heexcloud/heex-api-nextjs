@@ -175,6 +175,7 @@ export class FirebaseProvider implements IQueryable {
         .collection(this.firestoreCollectionName)
         .where("clientId", "==", clientId)
         .where("pageId", "==", _pageId)
+        .where("tid", "==", "")
         .count();
       const count = (await ref.get()).data() as unknown as number;
 
