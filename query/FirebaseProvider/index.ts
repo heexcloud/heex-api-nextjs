@@ -193,8 +193,23 @@ export class FirebaseProvider implements IQueryable {
       const docRef = this.firestore
         .collection(this.firestoreCollectionName)
         .doc(typeof cid === "string" ? cid : cid.toString());
-      const doc = (await docRef.get()).data();
-      return doc as CommentType;
+      const comment = (await docRef.get()).data() as CommentType;
+
+      if (comment) {
+        const repliesSnapshot = await this.firestore
+          .collection(this.firestoreCollectionName)
+          .where("tid", "==", comment.objectId)
+          .orderBy("createdAt", "desc")
+          .get();
+
+        const replies = repliesSnapshot.docs.map(
+          (r) => r.data() as CommentType
+        );
+
+        comment.replies = replies;
+      }
+
+      return comment;
     } catch (err) {
       console.log("err :>> ", err);
     }
