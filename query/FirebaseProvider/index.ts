@@ -74,10 +74,10 @@ export class FirebaseProvider implements IQueryable {
         comment,
         createdAt: _createdAt,
         objectId,
-        tid: payload.tid || "",
-        rid: payload.rid || "",
+        tid: payload.tid || "", // empty string means this is a thread, otherwise, it's a reply
+        rid: payload.rid || "", // rid is reply id, so, the newly created comment is a reply's reply
         at: payload.at || "",
-        relies: [],
+        replies: [] as Omit<CommentType, "replies">[],
       });
 
       return { objectId, createdAt: _createdAt } as CreateCommentReturnType;
@@ -115,6 +115,7 @@ export class FirebaseProvider implements IQueryable {
         .collection(this.firestoreCollectionName)
         .where("clientId", "==", clientId)
         .where("pageId", "==", _pageId)
+        .where("tid", "==", "")
         .orderBy("createdAt", "desc");
 
       let snapshot;
@@ -130,12 +131,35 @@ export class FirebaseProvider implements IQueryable {
         (doc) => doc.data() as CommentType
       );
 
-      return { comments };
+      const queryReplies = this.firestore
+        .collection(this.firestoreCollectionName)
+        .where(
+          "tid",
+          "in",
+          comments.map((c) => c.objectId)
+        )
+        .orderBy("createdAt", "desc");
+
+      const replySnapshot = await queryReplies.get();
+      const replies = replySnapshot.docs.map(
+        (doc) => doc.data() as Omit<CommentType, "replies">
+      );
+
+      const replyIds = replies.map((r) => r.objectId);
+
+      comments.forEach((comment) => {
+        const index = replyIds.findIndex((rid) => rid === comment.objectId);
+        if (index > -1) {
+          comment.replies?.push(replies[index]);
+        }
+      });
+
+      return { comments } as GetCommentsReturnType;
     } catch (err) {
       console.log("err :>> ", err);
     }
 
-    return { comments: [] };
+    return { comments: [] } as GetCommentsReturnType;
   };
 
   getCommentCount: GetCommentCountFnType = async ({ clientId, pageId }) => {
