@@ -147,12 +147,10 @@ export class FirebaseProvider implements IQueryable {
           (doc) => doc.data() as Omit<CommentType, "replies">
         );
 
-        const tids = replies.map((r) => r.tid);
-
-        comments.forEach((comment) => {
-          const index = tids.findIndex((tid) => tid === comment.objectId);
+        replies.forEach((reply) => {
+          const index = comments.findIndex((c) => c.objectId === reply.tid);
           if (index > -1) {
-            comment.replies?.push(replies[index]);
+            comments[index].replies?.push(reply);
           }
         });
       }
