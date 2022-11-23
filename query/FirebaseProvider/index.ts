@@ -15,6 +15,7 @@ import {
   IQueryable,
   ThumbupCommentFnType,
 } from "../types";
+import PageLoader from "next/dist/client/page-loader";
 
 const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -44,56 +45,13 @@ export class FirebaseProvider implements IQueryable {
   }
 
   createComment: CreateCommentFnType = async (payload) => {
-    const { clientId, comment, pageId, createdAt, tid } = payload || {};
+    const { clientId, comment, pageId, email, username } = payload || {};
 
-    if (!payload || !comment || !clientId || !pageId) {
+    if (!payload || !comment || !clientId || !pageId || !email || !username) {
       return {} as CreateCommentReturnType;
     }
 
     try {
-      // if tid , it's a reply
-      if (tid) {
-        // find the comment first,
-        let thread: CommentType | undefined;
-        let replies: Omit<CommentType, "replies">[];
-
-        const threadRef = this.firestore
-          .collection(this.firestoreCollectionName)
-          .doc(tid);
-
-        thread = (await threadRef.get()).data() as CommentType | undefined;
-        if (thread === undefined) {
-          throw new Error("it should find the comment");
-        }
-
-        replies = thread.replies || [];
-
-        const replyObjectId = nanoid();
-
-        const _pageId =
-          pageId === "/"
-            ? pageId
-            : pageId.slice(-1) === "/"
-            ? pageId.slice(0, pageId.length - 1)
-            : pageId;
-
-        replies.push({
-          ...payload,
-          pageId: _pageId,
-          objectId: replyObjectId,
-          createdAt: Date.now(),
-        });
-
-        await threadRef.update({ replies });
-
-        return {
-          objectId: replyObjectId,
-          createdAt: payload.createdAt,
-        } as CreateCommentReturnType;
-      }
-
-      // else, add the comment as a thread
-
       const objectId = nanoid();
       const docRef = this.firestore
         .collection(this.firestoreCollectionName)
@@ -106,13 +64,23 @@ export class FirebaseProvider implements IQueryable {
           ? pageId.slice(0, pageId.length - 1)
           : pageId;
 
+      const _createdAt = payload.createdAt || Date.now();
       await docRef.set({
-        ...payload,
+        clientId,
+        clientName: payload.clientName || "",
+        username,
+        email,
         pageId: _pageId,
+        comment,
+        createdAt: _createdAt,
         objectId,
+        tid: payload.tid || "",
+        rid: payload.rid || "",
+        at: payload.at || "",
+        relies: [],
       });
 
-      return { objectId, createdAt } as CreateCommentReturnType;
+      return { objectId, createdAt: _createdAt } as CreateCommentReturnType;
     } catch (err) {
       console.log("err :>> ", err);
     }
@@ -211,7 +179,7 @@ export class FirebaseProvider implements IQueryable {
       const docRef = this.firestore
         .collection(this.firestoreCollectionName)
         .doc(cid);
-     
+
       await docRef.update({ likes });
       const doc = (await docRef.get()).data();
 

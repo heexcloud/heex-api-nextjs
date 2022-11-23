@@ -20,7 +20,7 @@ export type CommentType = {
   pageId: string;
   comment: string;
   createdAt: number;
-  updatedAt?: string;
+  updatedAt?: number;
   objectId: string;
   tid?: string; // the thread id of the comment, which makes it a reply per se
   rid?: string; // the id of the reply, which the reply replies to
