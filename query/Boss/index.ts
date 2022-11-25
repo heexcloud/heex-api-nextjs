@@ -1,5 +1,5 @@
 import { DatabaseProvider } from "root/heex.config";
-import { IBossable } from "../types";
+import { IBossable } from "./types";
 import { FirebaseProvider } from "./FirebaseProvider";
 import { LeanCloudProvider } from "./LeanCloudProvider";
 

@@ -66,5 +66,3 @@ export interface IQueryable {
   getCommentById: GetCommentByIdFnType;
   thumbupComment: ThumbupCommentFnType;
 }
-
-export interface IBossable {}

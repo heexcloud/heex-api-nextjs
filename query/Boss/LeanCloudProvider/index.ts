@@ -1,3 +1,3 @@
-import { IBossable } from "root/query/types";
+import { IBossable } from "../types";
 
 export class LeanCloudProvider implements IBossable {}
