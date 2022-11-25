@@ -12,7 +12,7 @@ import {
   GetCommentsReturnType,
   GetCommentByIdFnType,
   CommentType,
-  IQueryable,
+  IClientQueryable,
   ThumbupCommentFnType,
 } from "../types";
 
@@ -23,7 +23,7 @@ const firebaseConfig = {
   collectionName: process.env.FIRESTORE_COLLECTION_NAME,
 } as FirebaseConfig;
 
-export class FirebaseProvider implements IQueryable {
+export class FirebaseProvider implements IClientQueryable {
   firebaseApp: App | undefined;
   firestore: Firestore;
   firestoreCollectionName: string;

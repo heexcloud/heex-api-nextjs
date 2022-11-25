@@ -9,7 +9,7 @@ import {
   GetCommentsReturnType,
   GetCommentByIdFnType,
   CommentType,
-  IQueryable,
+  IClientQueryable,
   ThumbupCommentFnType,
 } from "../types";
 
@@ -25,7 +25,7 @@ const LEAN_STORAGE_CLASS = databaseConfig.leanStorageClass || "Comment";
 const COMMENT_CLASS_BASE_URL = `${BASE_URL}/1.1/classes/${LEAN_STORAGE_CLASS}`;
 const CQL_BASE_URL = `${BASE_URL}/1.1/cloudQuery`;
 
-export class LeanCloudProvider implements IQueryable {
+export class LeanCloudProvider implements IClientQueryable {
   getComments: GetCommentsFnType = async (params) => {
     const { pageId, clientId, limit, offset } = params;
     if (!clientId || !pageId) {

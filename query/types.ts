@@ -59,10 +59,12 @@ export type ThumbupCommentFnType = (args: {
   likes: number | string;
 }) => Promise<CommentType>;
 
-export interface IQueryable {
+export interface IClientQueryable {
   createComment: CreateCommentFnType;
   getComments: GetCommentsFnType;
   getCommentCount: GetCommentCountFnType;
   getCommentById: GetCommentByIdFnType;
   thumbupComment: ThumbupCommentFnType;
 }
+
+export interface IBossQueryable {}
