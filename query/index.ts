@@ -11,6 +11,8 @@ import {
   IBossQueryable,
 } from "./types";
 
+import { bossQuery } from "./BossQuery";
+
 import * as middlewares from "./middlewares";
 
 export type {
@@ -42,13 +44,13 @@ class Boss {
   get databaseProvider(): IBossQueryable {
     switch (process.env.DATABASE_PROVIDER) {
       case DatabaseProvider.leancloud:
-        return new bossQuery.LeanCloud();
+        return new bossQuery.LeanCloudProvider();
       case DatabaseProvider.firebase:
-        return new bossQuery.Firebase();
+        return new bossQuery.FirebaseProvider();
       default:
         console.error("Unsupported databaseProvider");
     }
-    return {} as IClientQueryable;
+    return {} as IBossQueryable;
   }
 }
 
