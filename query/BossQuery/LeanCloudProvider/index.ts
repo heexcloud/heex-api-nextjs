@@ -1,3 +1,3 @@
-import { IBossQueryable } from "root/query/types";
+import { IBossable } from "root/query/types";
 
-export class LeanCloudProvider implements IBossQueryable {}
+export class LeanCloudProvider implements IBossable {}

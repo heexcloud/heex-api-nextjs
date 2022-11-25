@@ -1,3 +1,3 @@
-import { IBossQueryable } from "root/query/types";
+import { IBossable } from "root/query/types";
 
-export class FirebaseProvider implements IBossQueryable {}
+export class FirebaseProvider implements IBossable {}

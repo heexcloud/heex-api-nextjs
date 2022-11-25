@@ -7,8 +7,8 @@ import {
   CommentCountReturnType,
   GetCommentsReturnType,
   ThumbupCommentFnType,
-  IClientQueryable,
-  IBossQueryable,
+  IQueryable,
+  IBossable,
 } from "./types";
 
 import { bossQuery } from "./BossQuery";
@@ -24,7 +24,7 @@ export type {
 };
 
 class Query {
-  get databaseProvider(): IClientQueryable {
+  get databaseProvider(): IQueryable {
     switch (process.env.DATABASE_PROVIDER) {
       case DatabaseProvider.leancloud:
         return new LeanCloudProvider();
@@ -33,7 +33,7 @@ class Query {
       default:
         console.error("Unsupported databaseProvider");
     }
-    return {} as IClientQueryable;
+    return {} as IQueryable;
   }
 }
 
@@ -41,7 +41,7 @@ export const query = new Query();
 export { middlewares };
 
 class Boss {
-  get databaseProvider(): IBossQueryable {
+  get databaseProvider(): IBossable {
     switch (process.env.DATABASE_PROVIDER) {
       case DatabaseProvider.leancloud:
         return new bossQuery.LeanCloudProvider();
@@ -50,7 +50,7 @@ class Boss {
       default:
         console.error("Unsupported databaseProvider");
     }
-    return {} as IBossQueryable;
+    return {} as IBossable;
   }
 }
 
