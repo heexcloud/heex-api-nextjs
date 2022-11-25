@@ -8,10 +8,9 @@ import {
   GetCommentsReturnType,
   ThumbupCommentFnType,
   IQueryable,
-  IBossable,
 } from "./types";
 
-import { bossQuery } from "./BossQuery";
+import { Boss } from "./Boss";
 
 import * as middlewares from "./middlewares";
 
@@ -39,19 +38,5 @@ class Query {
 
 export const query = new Query();
 export { middlewares };
-
-class Boss {
-  get databaseProvider(): IBossable {
-    switch (process.env.DATABASE_PROVIDER) {
-      case DatabaseProvider.leancloud:
-        return new bossQuery.LeanCloudProvider();
-      case DatabaseProvider.firebase:
-        return new bossQuery.FirebaseProvider();
-      default:
-        console.error("Unsupported databaseProvider");
-    }
-    return {} as IBossable;
-  }
-}
 
 export const boss = new Boss();
