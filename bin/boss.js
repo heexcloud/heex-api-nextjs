@@ -1,6 +1,6 @@
 const { Command } = require("commander");
 const argon2 = require("argon2");
-const { signup } = require("./utils");
+const actions = require("./actions");
 
 const program = new Command();
 
@@ -16,6 +16,6 @@ program
   .requiredOption("-e, --email <email>")
   .requiredOption("-p, --password <password>")
   .action(async (options, _program) => {
-    await signup(options);
+    await actions.signup(options);
   })
   .parse();
