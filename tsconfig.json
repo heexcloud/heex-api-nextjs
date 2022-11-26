@@ -19,6 +19,6 @@
       "root/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "bin/boss.js"],
   "exclude": ["node_modules"]
 }
