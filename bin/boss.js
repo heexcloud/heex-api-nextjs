@@ -1,6 +1,5 @@
-const { Command } = require("commander");
-const argon2 = require("argon2");
-const actions = require("./actions");
+import { Command } from "commander";
+import * as actions from "./actions.js";
 
 const program = new Command();
 

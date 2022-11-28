@@ -1,12 +1,8 @@
-const signup = async ({ username, email, password }) => {
-  try {
-    const passwordHash = await argon2.hash(password);
-    console.log("passwordHash :>> ", passwordHash);
-  } catch (err) {
-    //...
-  }
-};
+import { boss } from "root/query";
 
-module.exports = {
-  signup,
+export const signup = async ({ username, email, password }) => {
+  const result = await boss.password.signup({ username, email, password });
+  if (result === undefined) {
+    console.log("Register Boss failed");
+  }
 };

@@ -2,6 +2,7 @@
   "name": "heex-api-nextjs",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development next dev -p 8080",
     "start": "NODE_ENV=production next start -p 8080",

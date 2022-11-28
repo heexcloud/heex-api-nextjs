@@ -1,3 +1,66 @@
-import { IBossable } from "../types";
+import { IBossable, SignupPayload, LoginPayload } from "../types";
+import { type FirebaseConfig } from "root/heex.config";
+import firebaseAdmin from "firebase-admin";
+import { App, initializeApp } from "firebase-admin/app";
+import { getFirestore, Firestore } from "firebase-admin/firestore";
+import { nanoid } from "nanoid";
+import argon2 from "argon2";
 
-export class FirebaseProvider implements IBossable {}
+const firebaseConfig = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  collectionName: process.env.FIRESTORE_HEEX_BOSS_COLLECTION,
+} as FirebaseConfig;
+
+export class FirebaseProvider implements IBossable {
+  firebaseApp: App | undefined;
+  firestore: Firestore;
+  firestoreCollectionName: string;
+
+  constructor() {
+    if (firebaseAdmin.apps.length === 0) {
+      this.firebaseApp = initializeApp({
+        credential: firebaseAdmin.credential.cert({
+          projectId: firebaseConfig.projectId,
+          clientEmail: firebaseConfig.clientEmail,
+          privateKey: firebaseConfig.privateKey,
+        }),
+      });
+    }
+
+    this.firestore = getFirestore(this.firebaseApp!);
+    this.firestoreCollectionName = firebaseConfig.collectionName;
+  }
+  async signup({ username, email, password }: SignupPayload) {
+    try {
+      // query email or username, if duplicated, throw error
+      const bossRef = this.firestore
+        .collection(this.firestoreCollectionName)
+        .where("email", "==", email);
+      const snapshot = await bossRef.get();
+      if (snapshot.docs.length > 0) {
+        throw new Error(`Boss already exists for ${email}`);
+      }
+
+      const bossId = nanoid();
+      const docRef = this.firestore
+        .collection(this.firestoreCollectionName)
+        .doc(bossId);
+      const passwordHash = await argon2.hash(password);
+      await docRef.set({
+        bossId,
+        username,
+        email,
+        password: passwordHash,
+        createdAt: Date.now(),
+      });
+
+      return bossId;
+    } catch (err) {
+      console.error("err :>> ", err);
+    }
+  }
+
+  async login({ email, password }: LoginPayload) {}
+}
