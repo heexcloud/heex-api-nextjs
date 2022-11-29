@@ -85,19 +85,21 @@ export class FirebaseProvider implements IBossable {
       }
 
       const boss = snapshot.docs[0].data();
-      await argon2.verify(boss.password, password);
 
-      const token = jwt.sign(
-        {
-          username: boss.username,
-          email: boss.email,
-          bossId: boss.bossId,
-          expiresIn: "14d",
-        },
-        process.env.JWT_BOSS_TOKEN_SECRET!
-      );
+      const match = await argon2.verify(boss.password, password);
 
-      return { token };
+      if (match) {
+        const token = jwt.sign(
+          {
+            username: boss.username,
+            email: boss.email,
+            bossId: boss.bossId,
+            expiresIn: "14d",
+          },
+          process.env.JWT_BOSS_TOKEN_SECRET!
+        );
+        return { token };
+      }
     } catch (err) {
       console.error("err :>> ", err);
     }
