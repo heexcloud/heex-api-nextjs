@@ -12,5 +12,5 @@ export type LoginReturnType = {
 
 export interface IBossable {
   signup: (payload: SignupPayload) => Promise<string | undefined>;
-  login: (payload: LoginPayload) => Promise<LoginReturnType>;
+  login: (payload: LoginPayload) => Promise<LoginReturnType | undefined>;
 }

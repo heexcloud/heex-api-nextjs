@@ -5,6 +5,7 @@ import { App, initializeApp } from "firebase-admin/app";
 import { getFirestore, Firestore } from "firebase-admin/firestore";
 import { nanoid } from "nanoid";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
 
 const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -62,5 +63,33 @@ export class FirebaseProvider implements IBossable {
     }
   }
 
-  async login({ email, password }: LoginPayload) {}
+  async login({ email, password }: LoginPayload) {
+    try {
+      const bossRef = this.firestore
+        .collection(this.firestoreCollectionName)
+        .where("email", "==", email);
+
+      const snapshot = await bossRef.get();
+      if (snapshot.docs.length !== 1) {
+        throw new Error(`Boss already exists for ${email}`);
+      }
+
+      const boss = snapshot.docs[0].data();
+      await argon2.verify(boss.password, password);
+
+      const token = jwt.sign(
+        {
+          username: boss.username,
+          email: boss.email,
+          bossId: boss.bossId,
+          expiresIn: "14d",
+        },
+        process.env.JWT_BOSS_TOKEN_SECRET!
+      );
+
+      return { jwt: token };
+    } catch (err) {
+      console.error("err :>> ", err);
+    }
+  }
 }
