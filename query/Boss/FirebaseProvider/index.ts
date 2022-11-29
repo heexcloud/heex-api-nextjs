@@ -6,7 +6,7 @@ import { getFirestore, Firestore } from "firebase-admin/firestore";
 import { nanoid } from "nanoid";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import { SignupErrorMessage } from "./constants";
+import { SignupErrorMessage } from "../constants";
 
 const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
