@@ -35,13 +35,13 @@ export class FirebaseProvider implements IBossable {
   }
   async signup({ username, email, password }: SignupPayload) {
     try {
-      // query email or username, if duplicated, throw error
-      const bossRef = this.firestore
+      const snapshot = await this.firestore
         .collection(this.firestoreCollectionName)
-        .where("email", "==", email);
-      const snapshot = await bossRef.get();
-      if (snapshot.docs.length > 0) {
-        throw new Error(`Boss already exists for ${email}`);
+        .get();
+      if (snapshot.size > 0) {
+        throw new Error(
+          `You can create only ONE boss account via signup. If you need to create more, please contact the boss, who can create a new one for you`
+        );
       }
 
       const bossId = nanoid();
