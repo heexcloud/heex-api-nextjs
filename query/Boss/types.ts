@@ -7,7 +7,7 @@ export type SignupPayload = {
 export type LoginPayload = Omit<SignupPayload, "username">;
 
 export type LoginReturnType = {
-  jwt: string;
+  token: string;
 };
 
 export interface IBossable {

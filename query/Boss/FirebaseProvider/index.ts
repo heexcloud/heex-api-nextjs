@@ -87,7 +87,7 @@ export class FirebaseProvider implements IBossable {
         process.env.JWT_BOSS_TOKEN_SECRET!
       );
 
-      return { jwt: token };
+      return { token };
     } catch (err) {
       console.error("err :>> ", err);
     }

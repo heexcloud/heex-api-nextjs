@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { middlewares, boss } from "root/query";
-import jwt from "jsonwebtoken";
 import { RESPONSE_CODE } from "root/utils";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -15,7 +14,28 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const { email, password } = req.body;
-  } catch (err) {}
+    const result = await boss.databaseProvider.login({ email, password });
+
+    if (!result) {
+      throw new Error("Login failed");
+    }
+
+    res.status(200).json({
+      data: result,
+      code: RESPONSE_CODE.GENERAL_SUCCESS,
+      message: "login success",
+    });
+  } catch (err) {
+    let message = "Unknown Error";
+    if (err instanceof Error) message = err.message;
+    console.error("err :>> ", err);
+
+    res.status(200).json({
+      data: null,
+      code: RESPONSE_CODE.GENERAL_SUCCESS,
+      message: "login failed: " + message,
+    });
+  }
 }
 
 export default middlewares.cors(handler);
