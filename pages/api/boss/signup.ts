@@ -13,17 +13,21 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const { email, password } = req.body;
-    const result = await boss.databaseProvider.login({ email, password });
+    const { username, email, password } = req.body;
+    const result = await boss.databaseProvider.signup({
+      username,
+      email,
+      password,
+    });
 
-    if (!result) {
-      throw new Error("Login failed");
+    if (typeof result === "string") {
+      throw new Error(result);
     }
 
     res.status(200).json({
       data: result,
-      code: RESPONSE_CODE.GENERAL_SUCCESS,
-      message: "login success",
+      code: RESPONSE_CODE.CREATION_SUCCESS,
+      message: "signup success",
     });
   } catch (err) {
     let message = "Unknown Error";
@@ -32,8 +36,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.status(200).json({
       data: null,
-      code: RESPONSE_CODE.BAD_REQUEST_NOT_AUTHORIZED,
-      message: "login failed: " + message,
+      code: RESPONSE_CODE.GENERAL_SUCCESS,
+      message: "signup failed: " + message,
     });
   }
 }

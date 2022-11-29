@@ -57,9 +57,20 @@ export class FirebaseProvider implements IBossable {
         createdAt: Date.now(),
       });
 
-      return bossId;
+      const token = jwt.sign(
+        {
+          username,
+          email,
+          bossId: bossId,
+          expiresIn: "14d",
+        },
+        process.env.JWT_BOSS_TOKEN_SECRET!
+      );
+
+      return { token };
     } catch (err) {
       console.error("err :>> ", err);
+      return (err as any).message;
     }
   }
 
