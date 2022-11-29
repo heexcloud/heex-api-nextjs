@@ -6,6 +6,7 @@ import { getFirestore, Firestore } from "firebase-admin/firestore";
 import { nanoid } from "nanoid";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import { SignupErrorMessage } from "./constants";
 
 const firebaseConfig = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -39,9 +40,7 @@ export class FirebaseProvider implements IBossable {
         .collection(this.firestoreCollectionName)
         .get();
       if (snapshot.size > 0) {
-        throw new Error(
-          `You can create only ONE boss account via signup. If you need to create more, please contact the boss, who can create a new one for you`
-        );
+        throw new Error(SignupErrorMessage);
       }
 
       const bossId = nanoid();
