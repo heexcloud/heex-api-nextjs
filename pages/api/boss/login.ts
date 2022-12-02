@@ -3,6 +3,7 @@ import { middlewares, boss } from "root/query";
 import { RESPONSE_CODE } from "root/utils";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // !TODO: use middleware to filter the traffic that's not POST
   if (req.method !== "POST") {
     res.status(400).json({
       data: null,
