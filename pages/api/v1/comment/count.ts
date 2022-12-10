@@ -5,9 +5,11 @@ import { RESPONSE_CODE } from "root/utils";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
-    res.status(425).end(`Method ${req.method} is not allowed.`);
-    return;
+    return res.status(200).json({
+      data: null,
+      code: RESPONSE_CODE.BAD_REQUEST_METHOD_NOT_ALLOWED,
+      message: "only get method is supported",
+    });
   }
 
   if (!req.query.pageId || typeof req.query.pageId !== "string") {
